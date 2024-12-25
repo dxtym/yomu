@@ -1,8 +1,8 @@
 package db
 
 import (
-	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Store struct {
@@ -15,7 +15,7 @@ func NewStore(dsn string) (*Store, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &Library{})
 
 	return &Store{db: db}, nil
 }

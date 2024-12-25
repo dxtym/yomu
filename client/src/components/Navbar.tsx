@@ -1,12 +1,12 @@
 import { Container, Flex } from "@chakra-ui/react";
-import NavButton from "./NavButton";
+import Option from "./Option";
 
 export default function Navbar(props: any) {
-    return (
-    <Container className='navbar'>
+  return (
+    <Container py="25px" position="fixed" bottom={0} zIndex={1} bgColor="black">
       <Flex>
         {props.navs.map((nav: string, index: number) => (
-            <NavButton text={nav} index={index} />
+          <Option text={nav} index={index} />
         ))}
       </Flex>
     </Container>

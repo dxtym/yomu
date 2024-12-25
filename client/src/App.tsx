@@ -1,45 +1,48 @@
-import './App.css'
-import { useEffect, useState } from 'react'
-import WebApp from '@twa-dev/sdk'
-import axios from 'axios'
-import { Text } from '@chakra-ui/react'
+import "./App.css";
+import axios from "axios";
+import WebApp from "@twa-dev/sdk";
+import Library from "./pages/Library";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 interface UserData {
-  id: number
-  first_name: string
-  last_name?: string
-  user_name?: string
+  id: number;
+  first_name: string;
+  last_name?: string;
+  user_name?: string;
 }
 
 export default function App() {
   const [userData, setUserData] = useState<UserData>();
   useEffect(() => {
     if (WebApp.initDataUnsafe.user) {
-      setUserData(WebApp.initDataUnsafe.user as UserData)
+      setUserData(WebApp.initDataUnsafe.user as UserData);
     }
   }, []);
 
   useEffect(() => {
     const createUser = async () => {
-      const url = "https://02d0-185-78-137-122.ngrok-free.app/api/v1/user";
+      const url = import.meta.env.VITE_API_URL as string;
 
       try {
-        const res = await axios.post(url, userData);
+        const res = await axios.post(`${url}/user`, userData);
+        localStorage.setItem("token", res.data.token);
         console.log(res.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    createUser();
-  }, []);
+    if (userData) {
+      createUser();
+    }
+  }, [userData]);
 
   return (
-    <>
-      <Text>{ userData?.id }</Text>
-      <Text>{ userData?.first_name }</Text>
-      <Text>{ userData?.last_name }</Text>
-      <Text>{ userData?.user_name }</Text>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Library />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

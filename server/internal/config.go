@@ -4,12 +4,14 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	Address     string `mapstructure:"ADDRESS"`
+	SecretKey   string `mapstructure:"SECRET_KEY"`
+	ApiUrl      string `mapstructure:"API_URL"`
 	DatabaseUrl string `mapstructure:"DATABASE_URL"`
 }
 
 func LoadConfig(path string) (*Config, error) {
 	viper.AddConfigPath(path)
-	viper.SetConfigName("config")
+	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()

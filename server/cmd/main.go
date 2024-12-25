@@ -6,6 +6,7 @@ import (
 	"github.com/dxtym/yomu/server/api"
 	"github.com/dxtym/yomu/server/db"
 	"github.com/dxtym/yomu/server/internal"
+	"github.com/machinebox/graphql"
 )
 
 func main() {
@@ -19,7 +20,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server := api.NewServer(store)
+	token, err := internal.NewToken(config.SecretKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := graphql.NewClient(config.ApiUrl)
+	server := api.NewServer(store, token, client)
 	if err := server.Start(config.Address); err != nil {
 		log.Fatal(err)
 	}
