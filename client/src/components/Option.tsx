@@ -16,15 +16,15 @@ export default function Option(props: any) {
   return (
     <Container>
       <Button
-        variant="plain"
-        display="flex"
-        flexDir="column"
-        justifyContent="center"
-        alignItems="center"
-        gap="5px"
+        variant={"plain"}
+        display={"flex"}
+        flexDir={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={"5px"}
       >
         {renderIcons()}
-        <Text textStyle="md">{props.text}</Text>
+        <Text textStyle={"md"}>{props.text}</Text>
       </Button>
     </Container>
   );

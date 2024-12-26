@@ -11,7 +11,7 @@ import (
 
 type GetLibraryQuery struct {
 	Media struct {
-		Id         int
+		Id         uint
 		CoverImage struct {
 			Large string
 		}
@@ -19,7 +19,7 @@ type GetLibraryQuery struct {
 }
 
 type GetLibraryResponse struct {
-	Library    uint   `json:"library"`
+	MangaId    uint   `json:"manga_id"`
 	CoverImage string `json:"cover_image"`
 }
 
@@ -37,8 +37,8 @@ func (s *Server) getLibrary(c *gin.Context) {
 	// TODO: change to concurrent pattern
 	var libraryQuery []GetLibraryQuery
 	for _, id := range library {
-		query := fmt.Sprintf("{ Media (id : %d, type: MANGA) { id coverImage { large } } }", id)
-		req := graphql.NewRequest(query)
+		query := "{ Media (id : %d, type: MANGA, isAdult: false) { id coverImage { large } } }"
+		req := graphql.NewRequest(fmt.Sprintf(query, id))
 
 		var res GetLibraryQuery
 		if err := s.client.Run(c, req, &res); err != nil {
@@ -51,10 +51,10 @@ func (s *Server) getLibrary(c *gin.Context) {
 	}
 
 	var resp []GetLibraryResponse
-	for i := range libraryQuery {
+	for _, media := range libraryQuery {
 		resp = append(resp, GetLibraryResponse{
-			Library:    library[i],
-			CoverImage: libraryQuery[i].Media.CoverImage.Large,
+			MangaId:    media.Media.Id,
+			CoverImage: media.Media.CoverImage.Large,
 		})
 	}
 

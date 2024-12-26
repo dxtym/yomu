@@ -26,6 +26,7 @@ func NewServer(store *db.Store, token *internal.Token, client *graphql.Client) *
 	// TODO: fix invalid token
 	auth := v1.Group("/").Use(authMiddleware(token))
 	auth.GET("/library", server.getLibrary)
+	auth.GET("/search", server.searchManga)
 
 	server.router = router
 	server.token = token

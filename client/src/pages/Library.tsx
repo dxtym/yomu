@@ -3,10 +3,11 @@ import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Text } from "@chakra-ui/react";
+import Empty from "@/components/Empty";
+import terminal from "virtual:terminal";
 
 export interface Manga {
-  id: number;
+  manga_id: number;
   cover_image: string;
 }
 
@@ -24,9 +25,13 @@ export default function Library() {
           },
         });
         setData(res.data);
-        console.log(res.data);
+        if (!res.data || res.data.length === 0) {
+          document.body.style.height = "100vh";
+          document.body.style.overflow = "hidden";
+        }
+        terminal.log(res.data);
       } catch (error) {
-        console.error(error);
+        terminal.error(error);
       }
     };
 
@@ -35,9 +40,9 @@ export default function Library() {
 
   return (
     <>
-      <Header name="Library" />
-      {data ? <Gallery data={data} /> : <Text>Loading...</Text>}
-      <Navbar navs={["Library", "Search", "History"]} />
+      <Header name={"Library"} />
+      {data && data.length ? <Gallery data={data} /> : <Empty />}
+      <Navbar navs={["Library", "Browse", "History"]} />
     </>
   );
 }
