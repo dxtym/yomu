@@ -11,12 +11,12 @@ var ErrExpiredToken = errors.New("token expired")
 
 type Claim struct {
 	Id        uuid.UUID
-	UserId    uint
+	UserId    int64
 	CreatedAt time.Time
 	ExpireAt  time.Time
 }
 
-func NewClaim(userId uint, duration time.Duration) (*Claim, error) {
+func NewClaim(userId int64, duration time.Duration) (*Claim, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err

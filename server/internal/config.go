@@ -6,6 +6,7 @@ type Config struct {
 	Address     string `mapstructure:"ADDRESS"`
 	SecretKey   string `mapstructure:"SECRET_KEY"`
 	ApiUrl      string `mapstructure:"API_URL"`
+	BotToken    string `mapstructure:"BOT_TOKEN"`
 	DatabaseUrl string `mapstructure:"DATABASE_URL"`
 }
 

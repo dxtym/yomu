@@ -1,15 +1,20 @@
 package db
 
 type User struct {
-	Id        uint `gorm:"primaryKey"`
-	UserId    uint
+	Id        int64 `gorm:"primary_key"`
 	FirstName string
-	LastName  string
-	UserName  string
+}
+
+type Manga struct {
+	Id       int64  `gorm:"primary_key"`
+	Title    string `gorm:"unique"`
+	MangaUrl string `gorm:"unique"`
 }
 
 type Library struct {
-	Id      uint `gorm:"primaryKey"`
-	UserId  uint
-	MangaId uint
+	Id        int64 `gorm:"primary_key"`
+	UserId    int64
+	MangaId   int64
+	ChapterId int64
+	PageId    int64
 }

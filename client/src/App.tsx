@@ -5,54 +5,55 @@ import Library from "./pages/Library";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Browse from "./pages/Browse";
-import { terminal } from "virtual:terminal";
 
 interface UserData {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  user_name?: string;
+	id: number;
+	first_name: string;
 }
 
 export default function App() {
-  // TODO: use with telegram web client
-  // const [userData, setUserData] = useState<UserData>();
-  // useEffect(() => {
-  //   if (WebApp.initDataUnsafe.user) {
-  //     setUserData(WebApp.initDataUnsafe.user as UserData);
-  //   }
-  // }, []);
+	const url = import.meta.env.VITE_API_URL;
+	const [data, setData] = useState<UserData>();
+	const [user, setUser] = useState<boolean>(false);
 
-  const userData = {
-    id: 2,
-    first_name: "Joe",
-  } as UserData;
+	useEffect(() => {
+		const cached = localStorage.getItem("user");
+		if (cached) {
+			setData(JSON.parse(cached) as UserData);
+			setUser(true);
+		} else {
+			const currentUser = WebApp.initDataUnsafe.user as UserData;
+			if (currentUser) {
+				setData(currentUser);
+			}
+		}
+	}, []);
 
-  useEffect(() => {
-    const createUser = async () => {
-      const url = import.meta.env.VITE_API_URL as string;
+	useEffect(() => {
+		const createUser = async () => {
+			if (data && !user) {
+				try {
+					const res = await axios.post(`${url}/user`, data);
+					if (res.status == 200) {
+						setUser(true);
+						localStorage.setItem("user", JSON.stringify(data));
+					}
+				} catch (error) {
+					console.error("cannot create user:", error);
+				}
+			}
+		};
 
-      try {
-        const res = await axios.post(`${url}/user`, userData);
-        localStorage.setItem("token", res.data.token);
-        terminal.log(res.data);
-      } catch (error) {
-        terminal.error(error);
-      }
-    };
+		createUser();
+		console.log(user);
+	}, [data, user]);
 
-    if (userData) {
-      createUser();
-    }
-  }, [userData]);
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Library />} />
-        <Route path="/library" element={<Library />} />
-        <Route path="/browse" element={<Browse />} />
-      </Routes>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Library />} />
+				<Route path="/browse" element={<Browse />} />
+			</Routes>
+		</BrowserRouter>
+	);
 }

@@ -27,7 +27,7 @@ func NewToken(secretKey string) (*Token, error) {
 	return &Token{secretKey: secretKey}, nil
 }
 
-func (tm *Token) CreateToken(userId uint, duration time.Duration) (string, error) {
+func (tm *Token) CreateToken(userId int64, duration time.Duration) (string, error) {
 	claim, err := NewClaim(userId, duration)
 	if err != nil {
 		return "", err

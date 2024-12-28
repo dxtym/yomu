@@ -1,12 +1,16 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"strings"
+	"time"
 
-	"github.com/dxtym/yomu/server/internal"
 	"github.com/gin-gonic/gin"
+	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
+
+const _initDataKey = "init-data"
 
 func CorsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -23,34 +27,45 @@ func CorsMiddleware() gin.HandlerFunc {
 	}
 }
 
-func authMiddleware(token *internal.Token) gin.HandlerFunc {
+func withInitData(c context.Context, initData initdata.InitData) context.Context {
+	return context.WithValue(c, _initDataKey, initData)
+}
+
+func authMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if len(authHeader) == 0 {
-			c.AbortWithStatus(http.StatusBadRequest)
+		authParts := strings.Split(c.GetHeader("authorization"), " ")
+		if len(authParts) != 2 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"message": "Unauthorized",
+			})
 			return
 		}
 
-		fields := strings.Fields(authHeader)
-		if len(fields) != 2 {
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
+		authType := authParts[0]
+		authData := authParts[1]
+
+		switch authType {
+		case "tma":
+			if err := initdata.Validate(authData, token, time.Hour); err != nil {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"message": err.Error(),
+				})
+				return
+			}
+
+			initData, err := initdata.Parse(authData)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+					"message": err.Error(),
+				})
+				return
+			}
+
+			c.Request = c.Request.WithContext(
+				withInitData(c.Request.Context(), initData),
+			)
 		}
 
-		if fields[0] != "Bearer" {
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		authToken := fields[1]
-		userId, err := token.VerifyToken(authToken)
-		if err != nil {
-			c.Error(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		c.Set("user_id", userId)
 		c.Next()
 	}
 }
