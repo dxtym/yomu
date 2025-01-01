@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dxtym/yomu/server/internal"
 	"github.com/gin-gonic/gin"
 	"github.com/gocolly/colly"
 )
@@ -15,8 +14,6 @@ type GetLibraryResponse struct {
 }
 
 func (s *Server) getLibrary(c *gin.Context) {
-	_ = c.MustGet("user_id").(*internal.Claim).UserId
-
 	var res []GetLibraryResponse
 	s.colly.OnHTML("#single_book > div.d-cell-medium.media > div > img", func(e *colly.HTMLElement) {
 		mangaUrl := e.Request.URL.String()

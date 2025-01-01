@@ -19,12 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	token, err := internal.NewToken(config.SecretKey)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	server := api.NewServer(store, token, config)
+	server := api.NewServer(store, config)
 	if err := server.Start(config.Address); err != nil {
 		log.Fatal(err)
 	}

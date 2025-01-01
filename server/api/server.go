@@ -11,12 +11,11 @@ import (
 type Server struct {
 	store  *db.Store
 	router *gin.Engine
-	token  *internal.Token
 	config *internal.Config
 	colly  *colly.Collector
 }
 
-func NewServer(store *db.Store, token *internal.Token, config *internal.Config) *Server {
+func NewServer(store *db.Store, config *internal.Config) *Server {
 	server := &Server{store: store}
 
 	router := gin.Default()
@@ -31,7 +30,6 @@ func NewServer(store *db.Store, token *internal.Token, config *internal.Config) 
 	auth.GET("/search", server.searchManga)
 
 	server.router = router
-	server.token = token
 	server.config = config
 	server.colly = colly.NewCollector()
 

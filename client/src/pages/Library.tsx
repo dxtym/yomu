@@ -3,40 +3,42 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Empty from "@/components/Empty";
+import WebApp from "@twa-dev/sdk";
 
 interface Manga {
-	manga_url: number;
-	cover_image: string;
+  manga_url: number;
+  cover_image: string;
 }
 
 export default function Library() {
-	const [data, setData] = useState<Array<Manga>>([]);
+  const url = import.meta.env.VITE_API_URL;
+  const [data, setData] = useState<Array<Manga>>([]);
 
-	useEffect(() => {
-		const fetchLibrary = async () => {
-			const url = import.meta.env.VITE_API_URL;
+  useEffect(() => {
+    const fetchLibrary = async () => {
+      axios
+        .get(`${url}/library`, {
+          headers: { authorization: `tma ${WebApp.initData}` },
+        })
+        .then((res) => {
+          setData(res.data);
+          if (!res.data || res.data.length == 0) {
+            document.body.style.height = "100vh";
+            document.body.style.overflow = "hidden";
+          }
+        })
+        .catch((err) => console.error(err));
+    };
 
-			try {
-				const res = await axios.get(`${url}/library`)
-				setData(res.data);
-				if (!res.data || res.data.length === 0) {
-					document.body.style.height = "100vh";
-					document.body.style.overflow = "hidden";
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
+    fetchLibrary();
+  }, []);
 
-		fetchLibrary();
-		console.log(data);
-	}, []);
-
-	return (
-		<>
-			<Header name={"Library"} />
-			<Empty />
-			<Navbar navs={["Library", "Browse", "History"]} />
-		</>
-	);
+  return (
+    <>
+      <Header name={"Library"} />
+      {/* TODO: fetch data from library */}
+      <Empty />
+      <Navbar navs={["Library", "Browse", "History"]} />
+    </>
+  );
 }

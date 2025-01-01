@@ -1,8 +1,6 @@
 package db
 
 import (
-	"errors"
-
 	"gorm.io/gorm"
 )
 
@@ -14,5 +12,5 @@ func (s *Store) CreateUser(user *User) error {
 		}
 		return u.Error
 	}
-	return errors.New("user already exists")
+	return nil
 }
