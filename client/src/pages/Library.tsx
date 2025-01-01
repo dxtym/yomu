@@ -15,28 +15,23 @@ export default function Library() {
   const [data, setData] = useState<Array<Manga>>([]);
 
   useEffect(() => {
-    const fetchLibrary = async () => {
-      axios
-        .get(`${url}/library`, {
-          headers: { authorization: `tma ${WebApp.initData}` },
-        })
-        .then((res) => {
-          setData(res.data);
-          if (!res.data || res.data.length == 0) {
-            document.body.style.height = "100vh";
-            document.body.style.overflow = "hidden";
-          }
-        })
-        .catch((err) => console.error(err));
-    };
-
-    fetchLibrary();
+    axios
+      .get(`${url}/library`, {
+        headers: { authorization: `tma ${WebApp.initData}` },
+      })
+      .then((res) => {
+        setData(res.data);
+        if (!res.data || res.data.length == 0) {
+          document.body.style.height = "100vh";
+          document.body.style.overflow = "hidden";
+        }
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   return (
     <>
       <Header name={"Library"} />
-      {/* TODO: fetch data from library */}
       <Empty />
       <Navbar navs={["Library", "Browse", "History"]} />
     </>

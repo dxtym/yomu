@@ -10,7 +10,9 @@ export default function Header(props: any) {
       position={"fixed"}
       bgColor={"black"}
     >
-      <Heading textStyle={"2xl"}>{props.name}</Heading>
+      <Heading textStyle={"2xl"} onClick={props.onClick}>
+        {props.name}
+      </Heading>
     </Container>
   );
 }

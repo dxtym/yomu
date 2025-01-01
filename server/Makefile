@@ -1,3 +1,5 @@
+server:
+	@snap/bin/go run cmd/main.go
 
 dropdb:
 	docker exec -it postgres dropdb yomu

@@ -1,4 +1,4 @@
-package api
+package internal
 
 import (
 	"context"
@@ -31,7 +31,7 @@ func withInitData(c context.Context, initData initdata.InitData) context.Context
 	return context.WithValue(c, _initDataKey, initData)
 }
 
-func authMiddleware(token string) gin.HandlerFunc {
+func AuthMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authParts := strings.Split(c.GetHeader("authorization"), " ")
 		if len(authParts) != 2 {

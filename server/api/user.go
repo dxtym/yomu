@@ -13,7 +13,7 @@ type CreateUserRequest struct {
 }
 
 type CreateUserResponse struct {
-	Id    int64  `json:"id"`
+	Id        int64  `json:"id"`
 	FirstName string `json:"first_name"`
 }
 
@@ -37,6 +37,6 @@ func (s *Server) createUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, CreateUserResponse{
 		Id:        user.Id,
-		FirstName: user.FirstName,	
+		FirstName: user.FirstName,
 	})
 }

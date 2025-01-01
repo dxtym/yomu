@@ -1,4 +1,5 @@
-import { Container, Grid, GridItem, Image, Link } from "@chakra-ui/react";
+import { Container, Grid, GridItem, Image } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 interface GalleryProps {
   data: Array<any>;
@@ -15,10 +16,10 @@ export default function Gallery({ data, hasSearch = false }: GalleryProps) {
       mb={"75px"}
     >
       <Grid templateColumns={"repeat(2, 1fr)"} gap={"10"}>
-        {data.map((item: any) => {
+        {data.map((item: any, index: number) => {
           return (
-            <GridItem key={item.manga_url}>
-              <Link href={`manga/${item.manga_url}`}>
+            <GridItem key={index}>
+              <Link to={`${item.manga_url}`}>
                 <Image
                   src={item.cover_image}
                   height={"220px"}

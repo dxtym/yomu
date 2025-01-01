@@ -15,7 +15,7 @@ type GetLibraryResponse struct {
 
 func (s *Server) getLibrary(c *gin.Context) {
 	var res []GetLibraryResponse
-	s.colly.OnHTML("#single_book > div.d-cell-medium.media > div > img", func(e *colly.HTMLElement) {
+	s.colly.OnHTML("#single_book > div.media > div > img", func(e *colly.HTMLElement) {
 		mangaUrl := e.Request.URL.String()
 		res = append(res, GetLibraryResponse{
 			MangaUrl:   mangaUrl,

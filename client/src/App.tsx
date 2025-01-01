@@ -5,6 +5,7 @@ import Library from "./pages/Library";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Browse from "./pages/Browse";
+import Manga from "./pages/Manga";
 
 interface UserData {
   id: number;
@@ -51,11 +52,10 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {["/", "/library"].map((path, index) => {
-          return (
-            <Route path={path} element={<Library />} key={index} />
-          );
+          return <Route path={path} element={<Library />} key={index} />;
         })}
         <Route path="/browse" element={<Browse />} />
+        <Route path="/browse/:url" element={<Manga />} />
       </Routes>
     </BrowserRouter>
   );

@@ -19,15 +19,15 @@ func NewServer(store *db.Store, config *internal.Config) *Server {
 	server := &Server{store: store}
 
 	router := gin.Default()
-	router.Use(CorsMiddleware())
+	router.Use(internal.CorsMiddleware())
 
 	v1 := router.Group("/api/v1")
 	v1.POST("/user", server.createUser)
 
-	// TODO: fix invalid token
-	auth := v1.Use(authMiddleware(config.BotToken))
+	auth := v1.Use(internal.AuthMiddleware(config.BotToken))
 	auth.GET("/library", server.getLibrary)
 	auth.GET("/search", server.searchManga)
+	auth.GET("/manga/:url", server.getManga)
 
 	server.router = router
 	server.config = config

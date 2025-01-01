@@ -1,3 +1,1 @@
 ## Yomu
-
-- manga search

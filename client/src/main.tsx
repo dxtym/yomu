@@ -8,9 +8,9 @@ import WebApp from "@twa-dev/sdk";
 WebApp.ready();
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <Provider>
       <App />
     </Provider>
-  </StrictMode>,
+  // </StrictMode>,
 );
