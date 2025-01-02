@@ -1,24 +1,21 @@
-import axios from "axios";
-import Detail from "@/components/Detail";
-import Header from "@/components/Header";
+import { Container, Flex, Spinner } from "@chakra-ui/react";
 import WebApp from "@twa-dev/sdk";
-import { Flex, Spinner } from "@chakra-ui/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { useParams, useNavigate } from "react-router-dom";
-import { IDetail } from "@/types";
+import { PhotoProvider, PhotoSlider } from "react-photo-view";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function Manga() {
+export default function View() {
   const params = useParams();
   const navigate = useNavigate();
 
   const url = import.meta.env.VITE_API_URL;
-  const [data, setData] = useState<IDetail>();
+  const [data, setData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     axios
-      .get(`${url}/manga/${params.url}`, {
+      .get(`${url}/chapter/${params.url}/${params.id}`, {
         headers: { authorization: `tma ${WebApp.initData}` },
       })
       .then((res) => setData(res.data))
@@ -35,9 +32,17 @@ export default function Manga() {
   }
 
   return (
-    <>
-      <Header name={<IoMdArrowRoundBack />} onClick={() => navigate(-1)} />
-      <Detail data={data} />
-    </>
+    <PhotoProvider>
+      <Container>
+        <PhotoSlider
+          images={data?.page_urls.map((img: string, index: number) => ({
+            src: img,
+            key: index,
+          }))}
+          visible={true}
+          onClose={() => navigate(-1)}
+        />
+      </Container>
+    </PhotoProvider>
   );
 }

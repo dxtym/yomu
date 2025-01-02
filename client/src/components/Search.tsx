@@ -17,9 +17,13 @@ export default function Search() {
           headers: { authorization: `tma ${WebApp.initData}` },
           params: { title: search.split(" ").join("-") },
         })
-        .then((res) => setData(res.data))
+        .then((res) => {
+          setData(res.data);
+          document.body.style.height = "auto";
+          document.body.style.overflow = "auto";
+        })
         .catch((err) => console.error(err));
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(fetchManga);
   }, [search]);

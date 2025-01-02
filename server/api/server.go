@@ -28,6 +28,7 @@ func NewServer(store *db.Store, config *internal.Config) *Server {
 	auth.GET("/library", server.getLibrary)
 	auth.GET("/search", server.searchManga)
 	auth.GET("/manga/:url", server.getManga)
+	auth.GET("/chapter/:url/:id", server.getChapter)
 
 	server.router = router
 	server.config = config

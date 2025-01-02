@@ -1,5 +1,5 @@
 server:
-	@snap/bin/go run cmd/main.go
+	@/snap/bin/go run cmd/main.go
 
 dropdb:
 	docker exec -it postgres dropdb yomu
@@ -10,4 +10,4 @@ createdb:
 postgres:
 	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine
 
-.PHONY: createdb dropdb postgres
+.PHONY: createdb dropdb postgres server

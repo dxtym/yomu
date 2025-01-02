@@ -5,8 +5,8 @@ import { useEffect } from "react";
 
 export default function Browse() {
   useEffect(() => {
-    // document.body.style.height = "100vh";
-    // document.body.style.overflow = "hidden";
+    document.body.style.height = "100vh";
+    document.body.style.overflow = "hidden";
   }, []);
 
   return (

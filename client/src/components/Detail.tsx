@@ -7,6 +7,7 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
+import Chapter from "./Chapter";
 
 export default function Detail(props: any) {
   return (
@@ -32,6 +33,9 @@ export default function Detail(props: any) {
           Description
         </Text>
         <Text lineClamp={2}>{props.data.description}</Text>
+        {props.data.chapters.map((chapter: any, index: number) => {
+          return <Chapter key={index} name={chapter.name} url={chapter.url} />;
+        })}
       </Flex>
     </Container>
   );

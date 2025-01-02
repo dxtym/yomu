@@ -14,6 +14,10 @@ type GetMangaResponse struct {
 	Author      string `json:"author"`
 	CoverImage  string `json:"cover_image"`
 	Description string `json:"description"`
+	Chapters    []struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
+	} `json:"chapters"`
 }
 
 type SearchMangaResponse struct {
@@ -38,6 +42,18 @@ func (s *Server) getManga(c *gin.Context) {
 	s.colly.OnHTML("#single_book > div.summary > p", func(h *colly.HTMLElement) {
 		res.Description = h.Text
 		log.Printf("found: %s\n", h.Text)
+	})
+
+	s.colly.OnHTML("#single_book > div.chapters > table > tbody > tr > td > div > a", func(h *colly.HTMLElement) {
+		chapter := struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		}{
+			Name: h.Text,
+			Url:  h.Attr("href"),
+		}
+		res.Chapters = append(res.Chapters, chapter)
+		log.Printf("found: %s -> %s\n", h.Text, h.Attr("href"))
 	})
 
 	s.colly.Visit(s.config.ApiUrl + "manga/" + url)

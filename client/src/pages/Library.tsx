@@ -4,15 +4,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Empty from "@/components/Empty";
 import WebApp from "@twa-dev/sdk";
-
-interface Manga {
-  manga_url: number;
-  cover_image: string;
-}
+import { IManga } from "@/types";
 
 export default function Library() {
   const url = import.meta.env.VITE_API_URL;
-  const [data, setData] = useState<Array<Manga>>([]);
+  const [data, setData] = useState<Array<IManga>>([]);
 
   useEffect(() => {
     axios
