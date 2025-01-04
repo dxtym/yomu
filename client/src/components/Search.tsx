@@ -12,6 +12,7 @@ export default function Search() {
 
   useEffect(() => {
     const fetchManga = setTimeout(() => {
+      if (!search) return;
       axios
         .get(`${url}/search`, {
           headers: { authorization: `tma ${WebApp.initData}` },
