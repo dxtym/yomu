@@ -24,7 +24,7 @@ export default function Manga() {
       .then((res) => setData(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url, params]);
 
   if (loading) {
     return (

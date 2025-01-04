@@ -10,6 +10,8 @@ import {
 import Chapter from "./Chapter";
 
 export default function Detail(props: any) {
+  console.log(props.data);
+
   return (
     <Container
       py={"25px"}
