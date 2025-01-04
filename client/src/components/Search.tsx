@@ -19,6 +19,7 @@ export default function Search() {
           params: { title: search.split(" ").join("-") },
         })
         .then((res) => {
+          console.log(res.data);
           setData(res.data);
           document.body.style.height = "auto";
           document.body.style.overflow = "auto";
