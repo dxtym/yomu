@@ -7,7 +7,6 @@ interface GalleryProps {
 }
 
 export default function Gallery({ data, hasSearch = false }: GalleryProps) {
-  console.log(data);
   return (
     <Container
       py={"25px"}

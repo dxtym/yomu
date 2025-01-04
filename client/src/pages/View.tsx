@@ -16,7 +16,10 @@ export default function View() {
   useEffect(() => {
     axios
       .get(`${url}/chapter/${params.url}/${params.id}`, {
-        headers: { authorization: `tma ${WebApp.initData}` },
+        headers: { 
+          authorization: `tma ${WebApp.initData}`,
+          "ngrok-skip-browser-warning": "true",
+        },
       })
       .then((res) => setData(res.data))
       .catch((err) => console.error(err))
