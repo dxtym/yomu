@@ -7,19 +7,21 @@ import WebApp from "@twa-dev/sdk";
 
 export default function Search() {
   const url = import.meta.env.VITE_API_URL;
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<any>([]);
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
+    if (!search.trim()) {
+      return;
+    }
+
     const fetchManga = setTimeout(() => {
-      if (!search) return;
       axios
         .get(`${url}/search`, {
           headers: { authorization: `tma ${WebApp.initData}` },
           params: { title: search.split(" ").join("-") },
         })
         .then((res) => {
-          console.log(res.data);
           setData(res.data);
           document.body.style.height = "auto";
           document.body.style.overflow = "auto";
