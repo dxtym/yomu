@@ -18,11 +18,15 @@ export default function Search() {
     const fetchManga = setTimeout(() => {
       axios
         .get(`${url}/search`, {
-          headers: { authorization: `tma ${WebApp.initData}` },
+          headers: {
+            authorization: `tma ${WebApp.initData}`,
+            "ngrok-skip-browser-warning": "true",
+          },
           params: { title: search.split(" ").join("-") },
         })
         .then((res) => {
           setData(res.data);
+          console.log(res.data);
           document.body.style.height = "auto";
           document.body.style.overflow = "auto";
         })
