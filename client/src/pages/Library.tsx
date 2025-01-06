@@ -13,7 +13,7 @@ export default function Library() {
   useEffect(() => {
     axios
       .get(`${url}/library`, {
-        headers: { "authorization": `tma ${WebApp.initData}` },
+        headers: { authorization: `tma ${WebApp.initData}` },
       })
       .then((res) => {
         setData(res.data);
@@ -29,11 +29,7 @@ export default function Library() {
   return (
     <>
       <Header name={"Library"} />
-      {data && data.length ? (
-        <Gallery data={data} />
-      ) : (
-        <Empty />
-      )}
+      {data && data.length ? <Gallery data={data} /> : <Empty />}
       <Navbar navs={["Library", "Browse", "History"]} />
     </>
   );
