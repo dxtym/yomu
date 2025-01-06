@@ -13,7 +13,10 @@ export default function Library() {
   useEffect(() => {
     axios
       .get(`${url}/library`, {
-        headers: { authorization: `tma ${WebApp.initData}` },
+        headers: { 
+          authorization: `tma ${WebApp.initData}`,
+          "ngrok-skip-browser-warning": "true",
+        },
       })
       .then((res) => {
         setData(res.data);
