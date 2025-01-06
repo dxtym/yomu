@@ -3,11 +3,11 @@ package internal
 import "github.com/spf13/viper"
 
 type Config struct {
-	Address     string `mapstructure:"ADDRESS"`
-	SecretKey   string `mapstructure:"SECRET_KEY"`
-	ApiUrl      string `mapstructure:"API_URL"`
-	BotToken    string `mapstructure:"BOT_TOKEN"`
-	DatabaseUrl string `mapstructure:"DATABASE_URL"`
+	Address      string `mapstructure:"ADDRESS"`
+	ApiUrl       string `mapstructure:"API_URL"`
+	RedisAddr    string `mapstructure:"REDIS_ADDR"`
+	BotToken     string `mapstructure:"BOT_TOKEN"`
+	PostgresAddr string `mapstructure:"POSTGRES_ADDR"`
 }
 
 func LoadConfig(path string) (*Config, error) {

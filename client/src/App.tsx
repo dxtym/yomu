@@ -17,8 +17,8 @@ export default function App() {
   useEffect(() => {
     const cached = localStorage.getItem("user");
     if (cached) {
-      setData(JSON.parse(cached) as IUserData);
       setUser(true);
+      setData(JSON.parse(cached) as IUserData);
     } else {
       const curr = WebApp.initDataUnsafe.user as IUserData;
       if (curr) {
@@ -33,7 +33,7 @@ export default function App() {
         axios
           .post(`${url}/user`, data)
           .then((res) => {
-            if (res.status == 200) {
+            if (res.status == 201) {
               setUser(true);
               localStorage.setItem("user", JSON.stringify(data));
             }

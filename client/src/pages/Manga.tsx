@@ -19,12 +19,15 @@ export default function Manga() {
   useEffect(() => {
     axios
       .get(`${url}/manga/${params.url}`, {
-        headers: { authorization: `tma ${WebApp.initData}` },
+        headers: {
+          authorization: `tma ${WebApp.initData}`,
+          "ngrok-skip-browser-warning": "true",
+        },
       })
       .then((res) => setData(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url, params]);
 
   if (loading) {
     return (

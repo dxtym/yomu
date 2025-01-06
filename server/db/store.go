@@ -1,8 +1,13 @@
 package db
 
 import (
+	"log"
+	"os"
+	"time"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Store struct {
@@ -10,12 +15,22 @@ type Store struct {
 }
 
 func NewStore(dsn string) (*Store, error) {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	logging := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: time.Second,
+			LogLevel:      logger.Info,
+			IgnoreRecordNotFoundError: true,
+		},
+	)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logging,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	db.AutoMigrate(&User{}, &Library{})
-
+	db.AutoMigrate(&User{}, &Library{}, &History{}, &Progress{})
 	return &Store{db: db}, nil
 }
