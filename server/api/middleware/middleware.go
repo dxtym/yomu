@@ -1,4 +1,4 @@
-package internal
+package middleware
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func CorsMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, ngrok-skip-browser-warning")
 
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 
@@ -33,27 +33,27 @@ func withInitData(c context.Context, initData initdata.InitData) context.Context
 
 func AuthMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authParts := strings.Split(c.GetHeader("authorization"), " ")
-		if len(authParts) != 2 {
+		auth := strings.Split(c.GetHeader("Authorization"), " ")
+		if len(auth) != 2 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Unauthorized",
 			})
 			return
 		}
 
-		authType := authParts[0]
-		authData := authParts[1]
+		atype := auth[0]
+		adata := auth[1]
 
-		switch authType {
+		switch atype {
 		case "tma":
-			if err := initdata.Validate(authData, token, time.Hour); err != nil {
+			if err := initdata.Validate(adata, token, time.Hour); err != nil {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 					"message": err.Error(),
 				})
 				return
 			}
 
-			initData, err := initdata.Parse(authData)
+			data, err := initdata.Parse(adata)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 					"message": err.Error(),
@@ -61,9 +61,7 @@ func AuthMiddleware(token string) gin.HandlerFunc {
 				return
 			}
 
-			c.Request = c.Request.WithContext(
-				withInitData(c.Request.Context(), initData),
-			)
+			c.Set("init-data", data)
 		}
 
 		c.Next()

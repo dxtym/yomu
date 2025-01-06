@@ -5,12 +5,13 @@ import (
 )
 
 func (s *Store) CreateUser(user *User) error {
-	u := s.db.First(&User{}, "id = ?", user.Id)
-	if u.Error != nil {
-		if u.Error == gorm.ErrRecordNotFound {
+	err := s.db.First(&User{}, "id = ?", user.Id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
 			return s.db.Create(user).Error
 		}
-		return u.Error
+		return err
 	}
+	
 	return nil
 }

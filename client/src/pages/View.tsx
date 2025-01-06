@@ -17,7 +17,7 @@ export default function View() {
     axios
       .get(`${url}/chapter/${params.url}/${params.id}`, {
         headers: { 
-          authorization: `tma ${WebApp.initData}`,
+          "authorization": `tma ${WebApp.initData}`,
           "ngrok-skip-browser-warning": "true",
         },
       })
@@ -44,6 +44,7 @@ export default function View() {
           }))}
           visible={true}
           onClose={() => navigate(-1)}
+          loop={false}
         />
       </Container>
     </PhotoProvider>

@@ -1,34 +1,27 @@
-package api
+package internal
 
 import (
 	"log"
-	"net/http"
+	"regexp"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	"github.com/dxtym/yomu/server/api/types"
 	"github.com/gocolly/colly"
 )
 
-type GetMangaResponse struct {
-	Title       string `json:"title"`
-	Author      string `json:"author"`
-	CoverImage  string `json:"cover_image"`
-	Description string `json:"description"`
-	Chapters    []struct {
-		Name string `json:"name"`
-		Url  string `json:"url"`
-	} `json:"chapters"`
+type Scrape struct {
+	colly *colly.Collector
 }
 
-type SearchMangaResponse struct {
-	MangaUrl   string `json:"manga_url"`
-	CoverImage string `json:"cover_image"`
+func NewScrape() *Scrape {
+	return &Scrape{
+		colly: colly.NewCollector(
+			colly.AllowURLRevisit(),
+		),
+	}
 }
 
-func (s *Server) getManga(c *gin.Context) {
-	url := c.Param("url")
-
-	var res GetMangaResponse
+func (s *Scrape) GetManga(url string, manga string, res *types.GetMangaResponse) {
 	s.colly.OnHTML("#single_book > div.text > div > h1", func(h *colly.HTMLElement) {
 		res.Title = h.Text
 		log.Printf("found: %s\n", h.Text)
@@ -56,18 +49,10 @@ func (s *Server) getManga(c *gin.Context) {
 		log.Printf("found: %s -> %s\n", h.Text, h.Attr("href"))
 	})
 
-	s.colly.Visit(s.config.ApiUrl + "manga/" + url)
-
-	c.JSON(http.StatusOK, res)
+	s.colly.Visit(url + "manga/" + manga)
 }
 
-func (s *Server) searchManga(c *gin.Context) {
-	title := c.Query("title")
-	if title == "" {
-		c.JSON(http.StatusNoContent, gin.H{"message": "empty title"})
-		return
-	}
-
+func (s *Scrape) SearchManga(url string, title string, res *[]types.SearchMangaResponse) {
 	var urls []string
 	s.colly.OnHTML("#book_list > div > div.text > h3 > a", func(e *colly.HTMLElement) {
 		url := strings.Split(e.Attr("href"), "/")[4]
@@ -81,18 +66,25 @@ func (s *Server) searchManga(c *gin.Context) {
 		log.Printf("found: %s\n", e.Attr("src"))
 	})
 
-	s.colly.OnRequest(func(r *colly.Request) {
-		log.Printf("visiting: %s", r.URL.String())
-	})
-	s.colly.Visit(s.config.ApiUrl + "?search=" + title)
+	s.colly.Visit(url + "?search=" + title)
 
-	var res []SearchMangaResponse
 	for i := range urls {
-		res = append(res, SearchMangaResponse{
+		*res = append(*res, types.SearchMangaResponse{
 			MangaUrl:   urls[i],
 			CoverImage: images[i],
 		})
 	}
+}
 
-	c.JSON(http.StatusOK, res)
+func (s *Scrape) GetChapter(url string, manga string, id string, res *types.GetChapterResponse) {
+	s.colly.OnResponse(func(r *colly.Response) {
+		body := string(r.Body)
+		re := regexp.MustCompile(`var\sthzq=\[(.*?)\];`)
+		urls := regexp.MustCompile(`https:\/\/([^\']+)`)
+		match := re.FindString(body)
+		res.PageUrls = urls.FindAllString(match, -1)
+		log.Printf("found: %s\n", res.PageUrls)
+	})
+
+	s.colly.Visit(url + "manga/" + manga + "/" + id)
 }
