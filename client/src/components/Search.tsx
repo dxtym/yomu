@@ -11,10 +11,6 @@ export default function Search() {
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
-    if (!search.trim()) {
-      return;
-    }
-
     const fetchManga = setTimeout(() => {
       axios
         .get(`${url}/search`, {
