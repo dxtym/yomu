@@ -9,9 +9,7 @@ import {
 } from "@chakra-ui/react";
 import Chapter from "./Chapter";
 
-export default function Detail(props: any) {
-  console.log(props.data);
-
+const Detail = (props: any) => {
   return (
     <Container
       py={"25px"}
@@ -35,10 +33,15 @@ export default function Detail(props: any) {
           Description
         </Text>
         <Text lineClamp={2}>{props.data.description}</Text>
-        {props.data.chapters.map((chapter: any, index: number) => {
-          return <Chapter key={index} name={chapter.name} url={chapter.url} />;
-        })}
+        {props.data.chapters &&
+          props.data.chapters.map((chapter: any, index: number) => {
+            return (
+              <Chapter key={index} name={chapter.name} url={chapter.url} />
+            );
+          })}
       </Flex>
     </Container>
   );
-}
+};
+
+export default Detail;

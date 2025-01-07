@@ -1,12 +1,12 @@
-import Header from "@/components/Header";
-import Navbar from "@/components/Navbar";
-import Empty from "@/components/Empty";
+import Header from "@/components/common/Header";
+import Navbar from "@/components/common/Navbar";
+import Empty from "@/components/common/Empty";
 import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
-import Gallery from "@/components/Gallery";
+import Gallery from "@/components/common/Gallery";
 
-export default function Library() {
+const Library = () => {
   const url = import.meta.env.VITE_API_URL;
   const [data, setData] = useState<any>([]);
 
@@ -17,7 +17,6 @@ export default function Library() {
       })
       .then((res) => {
         setData(res.data);
-        console.log(res.data);
         if (!res.data || res.data.length == 0) {
           document.body.style.height = "100vh";
           document.body.style.overflow = "hidden";
@@ -29,8 +28,10 @@ export default function Library() {
   return (
     <>
       <Header name={"Library"} />
-      {data && data.length ? <Gallery data={data} /> : <Empty />}
+      {data ? <Gallery data={data} /> : <Empty />}
       <Navbar navs={["Library", "Browse", "History"]} />
     </>
   );
-}
+};
+
+export default Library;

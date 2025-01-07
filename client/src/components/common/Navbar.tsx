@@ -1,22 +1,24 @@
 import { Container, Flex, Link } from "@chakra-ui/react";
 import Option from "./Option";
 
-export default function Navbar(props: any) {
+const Navbar = (props: any) => {
   return (
     <Container
-      py={"25px"}
+      py={"20px"}
       position={"fixed"}
       bottom={0}
       zIndex={1}
       bgColor={"black"}
     >
-      <Flex justifyContent={"center"}>
+      <Flex justifyContent={"center"} alignItems={"center"}>
         {props.navs.map((nav: string, index: number) => (
-          <Link href={`/${nav.toLowerCase()}`}>
+          <Link key={index} href={`/${nav.toLowerCase()}`}>
             <Option text={nav} index={index} />
           </Link>
         ))}
       </Flex>
     </Container>
   );
-}
+};
+
+export default Navbar;

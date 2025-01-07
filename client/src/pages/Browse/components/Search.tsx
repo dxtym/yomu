@@ -1,20 +1,14 @@
-import { Container, Input } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Empty from "./Empty";
-import Gallery from "./Gallery";
 import WebApp from "@twa-dev/sdk";
+import Gallery from "@/components/common/Gallery";
+import Empty from "@/components/common/Empty";
 
-export default function Search() {
+const Search = (props: any) => {
   const url = import.meta.env.VITE_API_URL;
   const [data, setData] = useState<any>([]);
-  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
-    if (!search.trim()) {
-      return;
-    }
-
     const fetchManga = setTimeout(() => {
       axios
         .get(`${url}/search`, {
@@ -22,7 +16,7 @@ export default function Search() {
             authorization: `tma ${WebApp.initData}`,
             "ngrok-skip-browser-warning": "true",
           },
-          params: { title: search.split(" ").join("-") },
+          params: { title: props.search.split(" ").join("-") },
         })
         .then((res) => {
           setData(res.data);
@@ -34,21 +28,9 @@ export default function Search() {
     }, 1000);
 
     return () => clearTimeout(fetchManga);
-  }, [search]);
+  }, [props.search]);
 
-  return (
-    <Container py={"20px"} px={"25px"} position={"relative"} mt={"75px"}>
-      <Input
-        placeholder={"Search for manga..."}
-        variant={"subtle"}
-        size={"lg"}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      {data && data.length ? (
-        <Gallery data={data} hasSearch />
-      ) : (
-        <Empty hasSearch />
-      )}
-    </Container>
-  );
-}
+  return <>{data ? <Gallery data={data} hasSearch /> : <Empty />}</>;
+};
+
+export default Search;
