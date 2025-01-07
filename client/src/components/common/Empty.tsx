@@ -1,9 +1,9 @@
 import { Flex, Container, Text } from "@chakra-ui/react";
 
-export default function Empty({ hasSearch = false }: { hasSearch?: boolean }) {
+const Empty = () => {
   return (
     <Container
-      height={hasSearch ? "calc(100vh - 250px)" : "100vh"}
+      height={"100vh"}
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
@@ -14,4 +14,6 @@ export default function Empty({ hasSearch = false }: { hasSearch?: boolean }) {
       </Flex>
     </Container>
   );
-}
+};
+
+export default Empty;

@@ -1,21 +1,24 @@
-import { Container, Flex, Spinner } from "@chakra-ui/react";
-import WebApp from "@twa-dev/sdk";
 import axios from "axios";
+import Detail from "@/pages/Manga/components/Detail";
+import Header from "@/components/common/Header";
+import WebApp from "@twa-dev/sdk";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { PhotoProvider, PhotoSlider } from "react-photo-view";
-import { useNavigate, useParams } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { useParams, useNavigate } from "react-router-dom";
+import { IDetail } from "@/types";
 
-export default function View() {
+const Manga = () => {
   const params = useParams();
   const navigate = useNavigate();
 
   const url = import.meta.env.VITE_API_URL;
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<IDetail>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     axios
-      .get(`${url}/chapter/${params.url}/${params.id}`, {
+      .get(`${url}/manga/${params.url}`, {
         headers: {
           authorization: `tma ${WebApp.initData}`,
           "ngrok-skip-browser-warning": "true",
@@ -24,7 +27,7 @@ export default function View() {
       .then((res) => setData(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url, params]);
 
   if (loading) {
     return (
@@ -35,18 +38,11 @@ export default function View() {
   }
 
   return (
-    <PhotoProvider>
-      <Container>
-        <PhotoSlider
-          images={data?.page_urls.map((img: string, index: number) => ({
-            src: img,
-            key: index,
-          }))}
-          visible={true}
-          onClose={() => navigate(-1)}
-          loop={false}
-        />
-      </Container>
-    </PhotoProvider>
+    <>
+      <Header name={<IoMdArrowRoundBack />} onClick={() => navigate(-1)} />
+      <Detail data={data} />
+    </>
   );
-}
+};
+
+export default Manga;

@@ -18,8 +18,8 @@ func NewStore(dsn string) (*Store, error) {
 	logging := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			SlowThreshold: time.Second,
-			LogLevel:      logger.Info,
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
 			IgnoreRecordNotFoundError: true,
 		},
 	)

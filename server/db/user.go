@@ -12,6 +12,6 @@ func (s *Store) CreateUser(user *User) error {
 		}
 		return err
 	}
-	
+
 	return nil
 }

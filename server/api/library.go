@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"net/http"
@@ -25,8 +25,8 @@ func (s *Server) addLibrary(c *gin.Context) {
 	}
 
 	record := &db.Library{
-		UserId: uint(initData.User.ID),
-		Manga: req.Manga,
+		UserId:     uint(initData.User.ID),
+		Manga:      req.Manga,
 		CoverImage: req.CoverImage,
 	}
 	if err := s.store.AddLibrary(record); err != nil {
@@ -54,7 +54,7 @@ func (s *Server) getLibrary(c *gin.Context) {
 	var res []types.GetLibraryResponse
 	for _, record := range library {
 		res = append(res, types.GetLibraryResponse{
-			MangaUrl: record.Manga,
+			MangaUrl:   record.Manga,
 			CoverImage: record.CoverImage,
 		})
 	}

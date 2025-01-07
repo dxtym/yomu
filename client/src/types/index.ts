@@ -1,3 +1,3 @@
-export * from "./Detail";
-export * from "./Manga";
-export * from "./User";
+export * from "./detail";
+export * from "./manga";
+export * from "./user";
