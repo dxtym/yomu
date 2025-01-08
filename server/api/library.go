@@ -54,7 +54,7 @@ func (s *Server) getLibrary(c *gin.Context) {
 	var res []types.GetLibraryResponse
 	for _, record := range library {
 		res = append(res, types.GetLibraryResponse{
-			MangaUrl:   record.Manga,
+			Manga:   record.Manga,
 			CoverImage: record.CoverImage,
 		})
 	}

@@ -1,7 +1,11 @@
-import { Container, Flex, Link } from "@chakra-ui/react";
 import Option from "./Option";
+import { Container, Flex, Link } from "@chakra-ui/react";
 
-const Navbar = (props: any) => {
+interface NavbarProps {
+  navs: string[];
+}
+
+export default function Navbar({ navs }: NavbarProps) {
   return (
     <Container
       py={"20px"}
@@ -11,7 +15,7 @@ const Navbar = (props: any) => {
       bgColor={"black"}
     >
       <Flex justifyContent={"center"} alignItems={"center"}>
-        {props.navs.map((nav: string, index: number) => (
+        {navs.map((nav: string, index: number) => (
           <Link key={index} href={`/${nav.toLowerCase()}`}>
             <Option text={nav} index={index} />
           </Link>
@@ -19,6 +23,4 @@ const Navbar = (props: any) => {
       </Flex>
     </Container>
   );
-};
-
-export default Navbar;
+}

@@ -1,25 +1,25 @@
 import "./App.css";
-import axios from "axios";
 import WebApp from "@twa-dev/sdk";
-import Library from "./pages/Library/Library";
-import { useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Browse from "./pages/Browse/Browse";
-import Manga from "./pages/Manga/Manga";
-import { IUser } from "./types";
-import View from "./pages/View/View";
-import { useLocalStorage } from "usehooks-ts";
+import UserService from "./api/user";
 
-const App = () => {
-  const url = import.meta.env.VITE_API_URL;
-  const [user, setUser] = useLocalStorage("user", "");
+import View from "./pages/View/View";
+import Manga from "./pages/Manga/Manga";
+import Browse from "./pages/Browse/Browse";
+import Library from "./pages/Library/Library";
+
+import { useEffect } from "react";
+import { IUser } from "./types/user";
+import { useLocalStorage } from "usehooks-ts";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
+export default function App() {
+  const [user, setUser] = useLocalStorage<boolean>("user", true);
 
   useEffect(() => {
     if (!user) {
-      const curr = WebApp.initDataUnsafe.user as IUser;
-      setUser(JSON.stringify(curr));
-      axios
-        .post(`${url}/user`, curr)
+      const data = WebApp.initDataUnsafe.user as IUser;
+      setUser(true);
+      UserService.createUser(data)
         .then((res) => console.log(res))
         .catch((err) => console.error(err));
     }
@@ -31,11 +31,9 @@ const App = () => {
         <Route path={"/"} element={<Navigate to={"/library"} />} />
         <Route path={"/library"} element={<Library />} />
         <Route path={"/browse"} element={<Browse />} />
-        <Route path={"/browse/:url"} element={<Manga />} />
-        <Route path={"/chapter/:url/:id"} element={<View />} />
+        <Route path={"/browse/:manga"} element={<Manga />} />
+        <Route path={"/chapter/:manga/:chapter"} element={<View />} />
       </Routes>
     </BrowserRouter>
   );
-};
-
-export default App;
+}

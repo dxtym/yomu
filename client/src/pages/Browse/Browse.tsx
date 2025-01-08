@@ -1,23 +1,40 @@
+import MangaService from "@/api/manga";
+import Empty from "@/components/common/Empty";
+import Gallery from "@/components/common/Gallery";
+
 import Header from "@/components/common/Header";
 import Navbar from "@/components/common/Navbar";
-import Search from "@/pages/Browse/components/Search";
+
+import { IManga } from "@/types/manga";
 import { useEffect, useState } from "react";
 
-const Browse = () => {
-  const [search, setSearch] = useState<string>("");
+function Browse() {
+  const [data, setData] = useState<IManga[]>();
+  const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
-    document.body.style.height = "100vh";
-    document.body.style.overflow = "hidden";
-  }, []);
+    const fetch = setTimeout(() => {
+      MangaService.searchManga(query)
+        .then((res) => {
+          if (res) {
+            setData(res);
+            document.body.style.height = "auto";
+            document.body.style.overflow = "auto";
+          }
+        })
+        .catch((err) => console.error(err));
+    }, 1000);
+
+    return () => clearTimeout(fetch);
+  }, [query]);
 
   return (
     <>
-      <Header name={"Browse"} setSearch={setSearch} hasSearch />
-      <Search search={search} />
+      <Header name={"Browse"} setQuery={setQuery} hasSearch />
+      {data ? <Gallery data={data} hasSearch /> : <Empty />}
       <Navbar navs={["Library", "Browse", "History"]} />
     </>
   );
-};
+}
 
 export default Browse;

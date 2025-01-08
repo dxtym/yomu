@@ -6,6 +6,6 @@ type AddLibraryRequest struct {
 }
 
 type GetLibraryResponse struct {
-	MangaUrl   string `json:"manga_url"`
+	Manga   string `json:"manga"`
 	CoverImage string `json:"cover_image"`
 }

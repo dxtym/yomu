@@ -1,3 +1,5 @@
+import Chapter from "./Chapter";
+
 import {
   Center,
   Container,
@@ -7,41 +9,37 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import Chapter from "./Chapter";
+import { IDetail } from "@/types/detail";
 
-const Detail = (props: any) => {
+interface DetailProps {
+  data?: IDetail;
+}
+
+function Detail(props: DetailProps) {
+  const title = props.data?.title ?? "Untitled";
+  const coverImage = props.data?.cover_image ?? "/default.jpg";
+  const description = props.data?.description ?? "No description available.";
+  const chapters = props.data?.chapters ?? [];
+
   return (
-    <Container
-      py={"25px"}
-      px={"25px"}
-      position={"relative"}
-      mt={"75px"}
-      mb={"75px"}
-    >
-      <Flex direction={"column"} gap={"5"}>
+    <Container px={"25px"} my={"80px"} position={"relative"}>
+      <Flex direction={"column"} gap={5}>
         <HStack gapX={5}>
-          <Image
-            src={props.data.cover_image}
-            height={"220px"}
-            width={"150px"}
-          />
+          <Image src={coverImage} height={"220px"} width={"150px"} />
           <Heading size={"lg"}>
-            <Center>{props.data.title}</Center>
+            <Center>{title}</Center>
           </Heading>
         </HStack>
         <Text textStyle={"md"} fontWeight={"medium"}>
           Description
         </Text>
-        <Text lineClamp={2}>{props.data.description}</Text>
-        {props.data.chapters &&
-          props.data.chapters.map((chapter: any, index: number) => {
-            return (
-              <Chapter key={index} name={chapter.name} url={chapter.url} />
-            );
-          })}
+        <Text lineClamp={2}>{description}</Text>
+        {chapters?.map((chapter: any, index: number) => {
+          return <Chapter key={index} name={chapter.name} url={chapter.url} />;
+        })}
       </Flex>
     </Container>
   );
-};
+}
 
 export default Detail;
