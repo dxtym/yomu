@@ -1,4 +1,4 @@
 export interface IManga {
-  manga_url: number;
+  manga: string;
   cover_image: string;
 }

@@ -1,101 +1,78 @@
-import { Container, Grid, GridItem, Image, Alert } from "@chakra-ui/react";
-import WebApp from "@twa-dev/sdk";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import LibraryService from "@/api/library";
+import Toaster from "@/components/common/Toaster";
 
-const Gallery = (props: any) => {
-  const url = import.meta.env.VITE_API_URL;
+import { IManga } from "@/types/manga";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Container, Grid, GridItem, Image } from "@chakra-ui/react";
+
+interface GalleryProps {
+  data: IManga[];
+  hasSearch?: boolean;
+}
+
+export default function Gallery(props: GalleryProps) {
   const [manga, setManga] = useState<string>("");
-  const [alert, setAlert] = useState<boolean>(false);
+  const [toast, setToast] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<string>("");
   const [longPress, setLongPress] = useState<boolean>(false);
+
+  const handlePress = (item: IManga) => {
+    setLongPress(true);
+    setManga(item.manga);
+    setCoverImage(item.cover_image);
+  };
 
   useEffect(() => {
     let timer: any;
     if (longPress) {
       timer = setTimeout(() => {
-        axios
-          .post(
-            `${url}/library`,
-            { manga: manga, cover_image: coverImage },
-            {
-              headers: {
-                authorization: `tma ${WebApp.initData}`,
-                "ngrok-skip-browser-warning": "true",
-              },
-            },
-          )
-          .then((res) => {
-            console.log(res);
-            setAlert(true);
+        LibraryService.addLibrary(manga, coverImage)
+          .then(() => {
+            setToast(true);
             setTimeout(() => {
-              setAlert(false);
+              setToast(false);
             }, 3000);
           })
           .catch((err) => console.error(err));
-      }, 1500);
+      }, 1000);
     } else {
       clearTimeout(timer);
     }
 
     return () => clearTimeout(timer);
-  }, [longPress, manga, coverImage]);
+  }, [manga, longPress, coverImage]);
 
   return (
     <Container
-      position={"relative"}
-      mt={props.hasSearch ? "150px" : "80px"}
       mb={"80px"}
       px={"25px"}
+      position={"relative"}
+      mt={props.hasSearch ? "150px" : "80px"}
     >
-      {alert && (
-        <Alert.Root
-          status={"success"}
-          pos={"fixed"}
-          top={"15%"}
-          left={"50%"}
-          transform={"translate(-50%, -50%)"}
-          zIndex={"1000"}
-          width={"90%"}
-        >
-          <Alert.Indicator />
-          <Alert.Title>Added to the Library</Alert.Title>
-        </Alert.Root>
-      )}
+      {toast && <Toaster />}
       <Grid templateColumns={"repeat(2, 1fr)"} gap={5}>
-        {props.data &&
-          props.data.map((item: any, index: number) => {
-            return (
-              <GridItem
-                key={index}
-                onMouseDown={() => {
-                  setLongPress(true);
-                  setManga(item.manga_url);
-                  setCoverImage(item.cover_image);
-                }}
-                onMouseUp={() => setLongPress(false)}
-                onMouseLeave={() => setLongPress(false)}
-                onTouchStart={() => {
-                  setLongPress(true);
-                  setManga(item.manga_url);
-                  setCoverImage(item.cover_image);
-                }}
-                onTouchEnd={() => setLongPress(false)}
-              >
-                <Link to={`/browse/${item.manga_url}`}>
-                  <Image
-                    src={item.cover_image}
-                    height={"220px"}
-                    width={"220px"}
-                  />
-                </Link>
-              </GridItem>
-            );
-          })}
+        {props.data?.map((item: IManga, index: number) => {
+          return (
+            <GridItem
+              key={index}
+              onMouseDown={() => handlePress(item)}
+              onMouseUp={() => setLongPress(false)}
+              onMouseLeave={() => setLongPress(false)}
+              onTouchStart={() => handlePress(item)}
+              onTouchEnd={() => setLongPress(false)}
+            >
+              <Link to={`/browse/${item.manga}`}>
+                <Image
+                  src={item.cover_image}
+                  height={"220px"}
+                  width={"220px"}
+                />
+              </Link>
+            </GridItem>
+          );
+        }) ?? null}
       </Grid>
     </Container>
   );
-};
-
-export default Gallery;
+}

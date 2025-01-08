@@ -1,7 +1,12 @@
 import { Button, Container, Text } from "@chakra-ui/react";
 import { FaSearch, FaBook, FaHistory } from "react-icons/fa";
 
-const Option = (props: any) => {
+interface OptionProps {
+  text: string;
+  index: number;
+}
+
+export default function Option(props: OptionProps) {
   const renderIcons = () => {
     switch (props.index) {
       case 0:
@@ -28,6 +33,4 @@ const Option = (props: any) => {
       </Button>
     </Container>
   );
-};
-
-export default Option;
+}
