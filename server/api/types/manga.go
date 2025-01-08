@@ -2,7 +2,6 @@ package types
 
 type GetMangaResponse struct {
 	Title       string `json:"title"`
-	Author      string `json:"author"`
 	CoverImage  string `json:"cover_image"`
 	Description string `json:"description"`
 	Chapters    []struct {
@@ -12,6 +11,6 @@ type GetMangaResponse struct {
 }
 
 type SearchMangaResponse struct {
-	MangaUrl   string `json:"manga_url"`
+	Manga   string `json:"manga"`
 	CoverImage string `json:"cover_image"`
 }

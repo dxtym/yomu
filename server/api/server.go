@@ -27,13 +27,13 @@ func NewServer(
 	router := gin.Default()
 	router.Use(middleware.CorsMiddleware())
 
-	v1 := router.Group("/api/v1")
-	v1.POST("/user", server.createUser)
+	r := router.Group("/api/v1")
+	auth := r.Use(middleware.AuthMiddleware(config.BotToken))
 
-	auth := v1.Use(middleware.AuthMiddleware(config.BotToken))
+	auth.POST("/user", server.createUser)
 	auth.GET("/search", server.searchManga)
-	auth.GET("/manga/:url", server.getManga)
-	auth.GET("/chapter/:url/:id", server.getChapter)
+	auth.GET("/manga/:manga", server.getManga)
+	auth.GET("/chapter/:manga/:chapter", server.getChapter)
 	auth.POST("/library", server.addLibrary)
 	auth.GET("/library", server.getLibrary)
 

@@ -53,10 +53,10 @@ func (s *Scrape) GetManga(url string, manga string, res *types.GetMangaResponse)
 }
 
 func (s *Scrape) SearchManga(url string, title string, res *[]types.SearchMangaResponse) {
-	var urls []string
+	var mangas []string
 	s.colly.OnHTML("#book_list > div > div.text > h3 > a", func(e *colly.HTMLElement) {
 		url := strings.Split(e.Attr("href"), "/")[4]
-		urls = append(urls, url)
+		mangas = append(mangas, url)
 		log.Printf("found: %q -> %s\n", e.Text, e.Attr("href"))
 	})
 
@@ -68,23 +68,24 @@ func (s *Scrape) SearchManga(url string, title string, res *[]types.SearchMangaR
 
 	s.colly.Visit(url + "?search=" + title)
 
-	for i := range urls {
+	for i := range mangas {
 		*res = append(*res, types.SearchMangaResponse{
-			MangaUrl:   urls[i],
+			Manga:      mangas[i],
 			CoverImage: images[i],
 		})
 	}
 }
 
-func (s *Scrape) GetChapter(url string, manga string, id string, res *types.GetChapterResponse) {
+func (s *Scrape) GetChapter(url string, manga string, chapter string, res *types.GetChapterResponse) {
 	s.colly.OnResponse(func(r *colly.Response) {
 		body := string(r.Body)
 		re := regexp.MustCompile(`var\sthzq=\[(.*?)\];`)
 		urls := regexp.MustCompile(`https:\/\/([^\']+)`)
+		
 		match := re.FindString(body)
 		res.PageUrls = urls.FindAllString(match, -1)
 		log.Printf("found: %s\n", res.PageUrls)
 	})
 
-	s.colly.Visit(url + "manga/" + manga + "/" + id)
+	s.colly.Visit(url + "manga/" + manga + "/" + chapter)
 }

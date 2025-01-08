@@ -8,11 +8,11 @@ import (
 )
 
 func (s *Server) getChapter(c *gin.Context) {
-	url := c.Param("url")
-	id := c.Param("id")
+	manga := c.Param("manga")
+	chapter := c.Param("chapter")
 
 	var res types.GetChapterResponse
-	s.scrape.GetChapter(s.config.ApiUrl, url, id, &res)
+	s.scrape.GetChapter(s.config.ApiUrl, manga, chapter, &res)
 
 	c.JSON(http.StatusOK, res)
 }

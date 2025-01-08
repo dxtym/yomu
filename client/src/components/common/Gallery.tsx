@@ -71,7 +71,7 @@ export default function Gallery(props: GalleryProps) {
               </Link>
             </GridItem>
           );
-        }) ?? null}
+        })}
       </Grid>
     </Container>
   );
