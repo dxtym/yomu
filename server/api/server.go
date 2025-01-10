@@ -16,29 +16,25 @@ type Server struct {
 	scrape *internal.Scrape
 }
 
-func NewServer(
-	store *db.Store,
-	rdb *redis.Client,
-	scrape *internal.Scrape,
-	config *internal.Config,
-) *Server {
+func NewServer(store *db.Store, rdb *redis.Client, scrape *internal.Scrape, config *internal.Config) *Server {
 	server := &Server{store: store}
 
 	router := gin.Default()
 	router.Use(middleware.CorsMiddleware())
-
+	
 	r := router.Group("/api/v1")
 	auth := r.Use(middleware.AuthMiddleware(config.BotToken))
-
+	
 	auth.POST("/user", server.createUser)
 	auth.GET("/search", server.searchManga)
 	auth.GET("/manga/:manga", server.getManga)
 	auth.GET("/chapter/:manga/:chapter", server.getChapter)
 	auth.POST("/library", server.addLibrary)
 	auth.GET("/library", server.getLibrary)
-
-	server.rdb = rdb
+	auth.DELETE("/library", server.removeLibrary)
+	
 	server.router = router
+	server.rdb = rdb
 	server.config = config
 	server.scrape = scrape
 

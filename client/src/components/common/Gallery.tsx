@@ -4,7 +4,7 @@ import Toaster from "@/components/common/Toaster";
 import { IManga } from "@/types/manga";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Container, Grid, GridItem, Image } from "@chakra-ui/react";
+import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
 
 interface GalleryProps {
   data: IManga[];
@@ -16,6 +16,9 @@ export default function Gallery(props: GalleryProps) {
   const [toast, setToast] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<string>("");
   const [longPress, setLongPress] = useState<boolean>(false);
+  const action = props.hasSearch
+    ? LibraryService.addLibrary(manga, coverImage)
+    : LibraryService.removeLibrary(manga);
 
   const handlePress = (item: IManga) => {
     setLongPress(true);
@@ -27,12 +30,11 @@ export default function Gallery(props: GalleryProps) {
     let timer: any;
     if (longPress) {
       timer = setTimeout(() => {
-        LibraryService.addLibrary(manga, coverImage)
+        action
           .then(() => {
             setToast(true);
-            setTimeout(() => {
-              setToast(false);
-            }, 3000);
+            setLongPress(false);
+            setTimeout(() => { setToast(false); }, 3000);
           })
           .catch((err) => console.error(err));
       }, 1000);
@@ -63,11 +65,13 @@ export default function Gallery(props: GalleryProps) {
               onTouchEnd={() => setLongPress(false)}
             >
               <Link to={`/browse/${item.manga}`}>
-                <Image
-                  src={item.cover_image}
-                  height={"220px"}
-                  width={"220px"}
-                />
+                <Center>
+                  <Image
+                    src={item.cover_image}
+                    height={"220px"}
+                    width={"220px"}
+                  />
+                </Center>
               </Link>
             </GridItem>
           );

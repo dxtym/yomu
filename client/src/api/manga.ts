@@ -11,7 +11,6 @@ async function searchManga(query: string): Promise<IManga[]> {
 
 async function getManga(manga: string | undefined): Promise<IDetail> {
   const res = await apiClient.get<IDetail>(`/manga/${manga}`);
-  console.log(res.data);
   return res.data;
 }
 

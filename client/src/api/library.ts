@@ -14,4 +14,11 @@ async function addLibrary(manga: string, coverImage: string) {
   return res.data;
 }
 
-export default { getLibrary, addLibrary };
+async function removeLibrary(manga: string) {
+  const res = await apiClient.delete("/library", {
+    data: {manga: manga}
+  })
+  return res.data;
+}
+
+export default { getLibrary, addLibrary, removeLibrary };
