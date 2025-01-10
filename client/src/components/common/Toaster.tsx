@@ -12,7 +12,7 @@ export default function Toaster() {
       transform={"translate(-50%, -50%)"}
     >
       <Alert.Indicator />
-      <Alert.Title>Added to the Library</Alert.Title>
+      <Alert.Title>Updated library, Senpai!</Alert.Title>
     </Alert.Root>
   );
 }

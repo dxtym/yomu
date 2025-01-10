@@ -15,7 +15,9 @@ func (s *Server) getManga(c *gin.Context) {
 
 	var res types.GetMangaResponse
 	val, err := s.rdb.Get(c, manga).Result()
-	if err == redis.Nil {
+
+	switch err {
+	case redis.Nil:
 		s.scrape.GetManga(s.config.ApiUrl, manga, &res)
 		data, err := json.Marshal(res)
 		if err != nil {
@@ -28,20 +30,18 @@ func (s *Server) getManga(c *gin.Context) {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 			return
 		}
-
-		c.JSON(http.StatusOK, res)
-	} else if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
-	} else {
+	case nil: 
 		err = json.Unmarshal([]byte(val), &res)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 			return
 		}
-
-		c.JSON(http.StatusOK, res)
+	default:
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
 	}
-
+	
+	c.JSON(http.StatusOK, res)
 	return
 }
 

@@ -18,7 +18,7 @@ func (s *Server) addLibrary(c *gin.Context) {
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "init-data not found",
 		})
 		return
@@ -34,13 +34,13 @@ func (s *Server) addLibrary(c *gin.Context) {
 		return
 	}
 
-	c.AbortWithStatus(http.StatusCreated)
+	c.Status(http.StatusCreated)
 }
 
 func (s *Server) getLibrary(c *gin.Context) {
 	intiData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "init-data not found",
 		})
 	}
@@ -54,10 +54,35 @@ func (s *Server) getLibrary(c *gin.Context) {
 	var res []types.GetLibraryResponse
 	for _, record := range library {
 		res = append(res, types.GetLibraryResponse{
-			Manga:   record.Manga,
+			Manga:      record.Manga,
 			CoverImage: record.CoverImage,
 		})
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func (s *Server) removeLibrary(c *gin.Context) {
+	var req types.RemoveLibraryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		return
+	}
+
+	initData, ok := c.MustGet("init-data").(initdata.InitData)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "init-data not found",
+		})
+		return
+	}
+
+	userId := uint(initData.User.ID)
+	err := s.store.RemoveLibrary(userId, req.Manga)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 function View() {
   const params = useParams();
   const navigate = useNavigate();
+  const [page, setPage] = useState<number>(1);
   const [data, setData] = useState<IChapter>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -29,8 +30,10 @@ function View() {
       <Container>
         <PhotoSlider
           loop={false}
+          index={page}
           visible={true}
           onClose={() => navigate(-1)}
+          onIndexChange={(index: number) => setPage(index + 1)}
           images={
             data?.page_urls.map((img: string, index: number) => ({
               src: img,

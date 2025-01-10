@@ -16,18 +16,21 @@ export default function Gallery(props: GalleryProps) {
   const [toast, setToast] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<string>("");
   const [longPress, setLongPress] = useState<boolean>(false);
+  const action = props.hasSearch
+    ? LibraryService.addLibrary(manga, coverImage)
+    : LibraryService.removeLibrary(manga);
 
   const handlePress = (item: IManga) => {
     setLongPress(true);
     setManga(item.manga);
     setCoverImage(item.cover_image);
   };
-
+  
   useEffect(() => {
     let timer: any;
     if (longPress) {
       timer = setTimeout(() => {
-        LibraryService.addLibrary(manga, coverImage)
+        action
           .then(() => {
             setToast(true);
             setTimeout(() => {
