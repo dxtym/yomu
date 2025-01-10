@@ -32,6 +32,7 @@ function View() {
           loop={false}
           index={page}
           visible={true}
+          loadingElement={<Loading />}
           onClose={() => navigate(-1)}
           onIndexChange={(index: number) => setPage(index + 1)}
           images={

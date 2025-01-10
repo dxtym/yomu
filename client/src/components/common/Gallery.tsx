@@ -4,7 +4,7 @@ import Toaster from "@/components/common/Toaster";
 import { IManga } from "@/types/manga";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Container, Grid, GridItem, Image } from "@chakra-ui/react";
+import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
 
 interface GalleryProps {
   data: IManga[];
@@ -25,7 +25,7 @@ export default function Gallery(props: GalleryProps) {
     setManga(item.manga);
     setCoverImage(item.cover_image);
   };
-  
+
   useEffect(() => {
     let timer: any;
     if (longPress) {
@@ -33,9 +33,8 @@ export default function Gallery(props: GalleryProps) {
         action
           .then(() => {
             setToast(true);
-            setTimeout(() => {
-              setToast(false);
-            }, 3000);
+            setLongPress(false);
+            setTimeout(() => { setToast(false); }, 3000);
           })
           .catch((err) => console.error(err));
       }, 1000);
@@ -66,11 +65,13 @@ export default function Gallery(props: GalleryProps) {
               onTouchEnd={() => setLongPress(false)}
             >
               <Link to={`/browse/${item.manga}`}>
-                <Image
-                  src={item.cover_image}
-                  height={"220px"}
-                  width={"220px"}
-                />
+                <Center>
+                  <Image
+                    src={item.cover_image}
+                    height={"220px"}
+                    width={"220px"}
+                  />
+                </Center>
               </Link>
             </GridItem>
           );
