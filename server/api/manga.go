@@ -42,7 +42,6 @@ func (s *Server) getManga(c *gin.Context) {
 	}
 	
 	c.JSON(http.StatusOK, res)
-	return
 }
 
 func (s *Server) searchManga(c *gin.Context) {
