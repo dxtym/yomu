@@ -6,6 +6,7 @@ import View from "./pages/View/View";
 import Manga from "./pages/Manga/Manga";
 import Browse from "./pages/Browse/Browse";
 import Library from "./pages/Library/Library";
+import History from "./pages/History/History";
 
 import { useEffect } from "react";
 import { IUser } from "./types/user";
@@ -31,6 +32,7 @@ export default function App() {
         <Route path={"/"} element={<Navigate to={"/library"} />} />
         <Route path={"/library"} element={<Library />} />
         <Route path={"/browse"} element={<Browse />} />
+        <Route path={"/history"} element={<History />} />
         <Route path={"/browse/:manga"} element={<Manga />} />
         <Route path={"/chapter/:manga/:chapter"} element={<View />} />
       </Routes>

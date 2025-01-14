@@ -22,10 +22,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// TODO: give password
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddr,
-		Password: "",
+		Password: config.RedisPassword,
 		DB:       0,
 	})
 

@@ -8,7 +8,7 @@ import { IDetail } from "@/types/detail";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-function Manga() {
+export default function Manga() {
   const params = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<IDetail>();
@@ -32,5 +32,3 @@ function Manga() {
     </>
   );
 }
-
-export default Manga;

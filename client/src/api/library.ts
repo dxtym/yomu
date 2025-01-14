@@ -6,19 +6,17 @@ async function getLibrary(): Promise<IManga[]> {
   return res.data;
 }
 
-async function addLibrary(manga: string, coverImage: string) {
-  const res = await apiClient.post("/library", {
+async function addLibrary(manga: string, coverImage: string): Promise<void> {
+  await apiClient.post("/library", {
     manga: manga,
     cover_image: coverImage,
   });
-  return res.data;
 }
 
-async function removeLibrary(manga: string) {
-  const res = await apiClient.delete("/library", {
-    data: {manga: manga}
-  })
-  return res.data;
+async function removeLibrary(manga: string): Promise<void> {
+  await apiClient.delete("/library", {
+    data: { manga: manga },
+  });
 }
 
 export default { getLibrary, addLibrary, removeLibrary };

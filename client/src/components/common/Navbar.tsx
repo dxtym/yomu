@@ -1,11 +1,9 @@
 import Option from "./Option";
 import { Container, Flex, Link } from "@chakra-ui/react";
 
-interface NavbarProps {
-  navs: string[];
-}
+export default function Navbar() {
+  const navs = ["Library", "Browse", "History"];
 
-export default function Navbar({ navs }: NavbarProps) {
   return (
     <Container
       py={"20px"}

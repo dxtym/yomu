@@ -6,7 +6,7 @@ interface ChapterProps {
   name: string;
 }
 
-function Chapter(props: ChapterProps) {
+export default function Chapter(props: ChapterProps) {
   const chapter = props.url.split("/").slice(4).join("/");
 
   return (
@@ -19,5 +19,3 @@ function Chapter(props: ChapterProps) {
     </Link>
   );
 }
-
-export default Chapter;
