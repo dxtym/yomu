@@ -8,7 +8,7 @@ import Gallery from "@/components/common/Gallery";
 import { IManga } from "@/types/manga";
 import { useEffect, useState } from "react";
 
-function Library() {
+export default function Library() {
   const [data, setData] = useState<IManga[]>([]);
 
   useEffect(() => {
@@ -25,9 +25,7 @@ function Library() {
     <>
       <Header name={"Library"} />
       {data ? <Gallery data={data} /> : <Empty />}
-      <Navbar navs={["Library", "Browse", "History"]} />
+      <Navbar />
     </>
   );
 }
-
-export default Library;

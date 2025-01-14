@@ -81,7 +81,7 @@ func (s *Scrape) GetChapter(url string, manga string, chapter string, res *types
 		body := string(r.Body)
 		re := regexp.MustCompile(`var\sthzq=\[(.*?)\];`)
 		urls := regexp.MustCompile(`https:\/\/([^\']+)`)
-		
+
 		match := re.FindString(body)
 		res.PageUrls = urls.FindAllString(match, -1)
 		log.Printf("found: %s\n", res.PageUrls)

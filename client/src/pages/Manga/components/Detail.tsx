@@ -15,7 +15,7 @@ interface DetailProps {
   data?: IDetail;
 }
 
-function Detail(props: DetailProps) {
+export default function Detail(props: DetailProps) {
   const title = props.data?.title ?? "Untitled";
   const coverImage = props.data?.cover_image ?? "/default.jpg";
   const description = props.data?.description ?? "No description available.";
@@ -41,5 +41,3 @@ function Detail(props: DetailProps) {
     </Container>
   );
 }
-
-export default Detail;

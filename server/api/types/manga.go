@@ -11,6 +11,6 @@ type GetMangaResponse struct {
 }
 
 type SearchMangaResponse struct {
-	Manga   string `json:"manga"`
+	Manga      string `json:"manga"`
 	CoverImage string `json:"cover_image"`
 }

@@ -30,7 +30,7 @@ func (s *Server) getManga(c *gin.Context) {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 			return
 		}
-	case nil: 
+	case nil:
 		err = json.Unmarshal([]byte(val), &res)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
@@ -40,7 +40,7 @@ func (s *Server) getManga(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, res)
 }
 

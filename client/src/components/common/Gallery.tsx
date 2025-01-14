@@ -3,7 +3,7 @@ import Toaster from "@/components/common/Toaster";
 
 import { IManga } from "@/types/manga";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
 
 interface GalleryProps {
@@ -12,38 +12,32 @@ interface GalleryProps {
 }
 
 export default function Gallery(props: GalleryProps) {
-  const [manga, setManga] = useState<string>("");
   const [toast, setToast] = useState<boolean>(false);
-  const [coverImage, setCoverImage] = useState<string>("");
-  const [longPress, setLongPress] = useState<boolean>(false);
-  const action = props.hasSearch
-    ? LibraryService.addLibrary(manga, coverImage)
-    : LibraryService.removeLibrary(manga);
+  const [timer, setTimer] = useState<Timer | null>(null);
 
   const handlePress = (item: IManga) => {
-    setLongPress(true);
-    setManga(item.manga);
-    setCoverImage(item.cover_image);
+    const newTimer = setTimeout(() => {
+      const action = props.hasSearch
+        ? LibraryService.addLibrary(item.manga, item.cover_image)
+        : LibraryService.removeLibrary(item.manga);
+
+      action
+        .then(() => {
+          setToast(true);
+          setTimeout(() => setToast(false), 3000);
+        })
+        .catch((err) => console.error(err));
+    }, 1000);
+
+    setTimer(newTimer);
   };
 
-  useEffect(() => {
-    let timer: any;
-    if (longPress) {
-      timer = setTimeout(() => {
-        action
-          .then(() => {
-            setToast(true);
-            setLongPress(false);
-            setTimeout(() => { setToast(false); }, 3000);
-          })
-          .catch((err) => console.error(err));
-      }, 1000);
-    } else {
+  const cancelPress = () => {
+    if (timer) {
       clearTimeout(timer);
+      setTimer(null);
     }
-
-    return () => clearTimeout(timer);
-  }, [manga, longPress, coverImage]);
+  };
 
   return (
     <Container
@@ -53,23 +47,26 @@ export default function Gallery(props: GalleryProps) {
       mt={props.hasSearch ? "150px" : "80px"}
     >
       {toast && <Toaster />}
-      <Grid templateColumns={"repeat(2, 1fr)"} gap={5}>
+      <Grid
+        templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
+        gap={5}
+      >
         {props.data?.map((item: IManga, index: number) => {
           return (
             <GridItem
               key={index}
               onMouseDown={() => handlePress(item)}
-              onMouseUp={() => setLongPress(false)}
-              onMouseLeave={() => setLongPress(false)}
+              onMouseUp={() => cancelPress()}
+              onMouseLeave={() => cancelPress()}
               onTouchStart={() => handlePress(item)}
-              onTouchEnd={() => setLongPress(false)}
+              onTouchEnd={() => cancelPress()}
             >
               <Link to={`/browse/${item.manga}`}>
                 <Center>
                   <Image
                     src={item.cover_image}
                     height={"220px"}
-                    width={"220px"}
+                    width={"200px"}
                   />
                 </Center>
               </Link>

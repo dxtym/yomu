@@ -8,7 +8,7 @@ import Navbar from "@/components/common/Navbar";
 import { IManga } from "@/types/manga";
 import { useEffect, useState } from "react";
 
-function Browse() {
+export default function Browse() {
   const [data, setData] = useState<IManga[]>();
   const [query, setQuery] = useState<string>("");
 
@@ -32,9 +32,7 @@ function Browse() {
     <>
       <Header name={"Browse"} setQuery={setQuery} hasSearch />
       {data ? <Gallery data={data} hasSearch /> : <Empty />}
-      <Navbar navs={["Library", "Browse", "History"]} />
+      <Navbar />
     </>
   );
 }
-
-export default Browse;
