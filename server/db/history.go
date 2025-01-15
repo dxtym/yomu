@@ -17,11 +17,15 @@ func (s *Store) AddHistory(record *History) error {
 	return s.db.Save(&h).Error
 }
 
-func (s *Store) GetHistory(userId uint) ([]History, error) {
+func (s *Store) GetHistory(userId uint64) ([]History, error) {
 	var h []History
 	if err := s.db.Order("read_at desc").Where("user_id = ?", userId).Find(&h).Error; err != nil {
 		return nil, err
 	}
 
 	return h, nil
+}
+
+func (s *Store) RemoveHistory(userId uint64, id uint64) error {
+	return s.db.Where("user_id = ? AND id = ?", userId, id).Delete(&History{}).Error
 }

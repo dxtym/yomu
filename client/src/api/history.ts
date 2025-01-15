@@ -6,4 +6,10 @@ async function getHistory(): Promise<IHistory[]> {
   return res.data;
 }
 
-export default { getHistory };
+async function removeHistory(id: number): Promise<void> {
+  await apiClient.delete("/history", {
+    params: { id: id }
+  });
+}
+
+export default { getHistory, removeHistory };

@@ -25,6 +25,7 @@ export default function Gallery(props: GalleryProps) {
         .then(() => {
           setToast(true);
           setTimeout(() => setToast(false), 3000);
+          if (!props.hasSearch) { window.location.reload(); }
         })
         .catch((err) => console.error(err));
     }, 1000);

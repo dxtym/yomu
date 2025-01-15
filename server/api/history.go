@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,7 +21,7 @@ func (s *Server) getHistory(c *gin.Context) {
 		return
 	}
 
-	userId := uint(initData.User.ID)
+	userId := uint64(initData.User.ID)
 	history, err := s.store.GetHistory(userId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
@@ -36,10 +37,35 @@ func (s *Server) getHistory(c *gin.Context) {
 		}
 
 		res = append(res, types.GetHistoryResponse{
+			Id:     history[i].Id,
 			Manga:  buf.String(),
 			ReadAt: history[i].ReadAt.Format(time.DateTime),
 		})
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func (s *Server) removeHistory(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Query("id"), 10, 64)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	initData, ok := c.MustGet("init-data").(initdata.InitData)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "init-data not found",
+		})
+		return
+	}
+
+	userId := uint64(initData.User.ID)
+	if err := s.store.RemoveHistory(userId, id); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

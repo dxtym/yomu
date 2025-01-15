@@ -10,7 +10,7 @@ func (s *Store) AddLibrary(record *Library) error {
 	return nil
 }
 
-func (s *Store) GetLibrary(userId uint) ([]Library, error) {
+func (s *Store) GetLibrary(userId uint64) ([]Library, error) {
 	var library []Library
 	if err := s.db.Where("user_id = ?", userId).Find(&library).Error; err != nil {
 		return nil, err
@@ -20,11 +20,6 @@ func (s *Store) GetLibrary(userId uint) ([]Library, error) {
 	return library, nil
 }
 
-func (s *Store) RemoveLibrary(userId uint, manga string) error {
-	err := s.db.Where("user_id = ? AND manga = ?", userId, manga).Delete(&Library{}).Error
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (s *Store) RemoveLibrary(userId uint64, manga string) error {
+	return s.db.Where("user_id = ? AND manga = ?", userId, manga).Delete(&Library{}).Error
 }
