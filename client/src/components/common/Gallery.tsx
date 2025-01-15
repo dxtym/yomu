@@ -25,7 +25,9 @@ export default function Gallery(props: GalleryProps) {
         .then(() => {
           setToast(true);
           setTimeout(() => setToast(false), 3000);
-          if (!props.hasSearch) { window.location.reload(); }
+          if (!props.hasSearch) {
+            window.location.reload();
+          }
         })
         .catch((err) => console.error(err));
     }, 1000);
@@ -64,11 +66,7 @@ export default function Gallery(props: GalleryProps) {
             >
               <Link to={`/browse/${item.manga}`}>
                 <Center>
-                  <Image
-                    src={item.cover_image}
-                    height={"220px"}
-                    width={"200px"}
-                  />
+                  <Image src={item.cover_image} height="250px" width="100%" />
                 </Center>
               </Link>
             </GridItem>

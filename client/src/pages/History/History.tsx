@@ -23,9 +23,9 @@ export default function History() {
       await HistoryService.removeHistory(id);
       window.location.reload();
     } catch (err) {
-      console.error(err)
-    } 
-  }
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     HistoryService.getHistory()
@@ -54,7 +54,10 @@ export default function History() {
                       </Text>
                       <Text>{item.read_at}</Text>
                     </Stack>
-                    <IconButton variant={"ghost"} onClick={() => handleDelete(item.id)}>
+                    <IconButton
+                      variant={"ghost"}
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <FaTrash />
                     </IconButton>
                   </Flex>

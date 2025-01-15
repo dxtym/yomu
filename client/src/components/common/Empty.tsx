@@ -10,7 +10,7 @@ export default function Empty() {
     >
       <Flex justifyContent={"center"} alignItems={"center"} flexDir={"column"}>
         <Text fontSize={"3xl"}>^•⩊•^</Text>
-        <Text>Gommenasai!</Text>
+        <Text>Gomenasai!</Text>
       </Flex>
     </Container>
   );

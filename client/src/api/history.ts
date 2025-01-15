@@ -8,7 +8,7 @@ async function getHistory(): Promise<IHistory[]> {
 
 async function removeHistory(id: number): Promise<void> {
   await apiClient.delete("/history", {
-    params: { id: id }
+    params: { id: id },
   });
 }
 
