@@ -6,6 +6,9 @@ import { Provider } from "@/components/ui/provider";
 import "react-photo-view/dist/react-photo-view.css";
 
 WebApp.ready();
+WebApp.exitFullscreen();
+WebApp.disableClosingConfirmation();
+WebApp.setBackgroundColor("bg_color");
 
 createRoot(document.getElementById("root")!).render(
   <Provider>

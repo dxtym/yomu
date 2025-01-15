@@ -25,7 +25,7 @@ func (s *Server) addLibrary(c *gin.Context) {
 	}
 
 	record := &db.Library{
-		UserId:     uint(initData.User.ID),
+		UserId:     uint64(initData.User.ID),
 		Manga:      req.Manga,
 		CoverImage: req.CoverImage,
 	}
@@ -45,7 +45,7 @@ func (s *Server) getLibrary(c *gin.Context) {
 		})
 	}
 
-	library, err := s.store.GetLibrary(uint(intiData.User.ID))
+	library, err := s.store.GetLibrary(uint64(intiData.User.ID))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
@@ -77,7 +77,7 @@ func (s *Server) removeLibrary(c *gin.Context) {
 		return
 	}
 
-	userId := uint(initData.User.ID)
+	userId := uint64(initData.User.ID)
 	err := s.store.RemoveLibrary(userId, req.Manga)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)

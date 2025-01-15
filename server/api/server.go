@@ -40,6 +40,7 @@ func (s *Server) setUpRouting() {
 	auth.GET("/manga/:manga", s.getManga)
 
 	auth.GET("/history", s.getHistory)
+	auth.DELETE("/history", s.removeHistory)
 
 	auth.POST("/library", s.addLibrary)
 	auth.GET("/library", s.getLibrary)

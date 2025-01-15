@@ -23,8 +23,8 @@ func (s *Store) UpdateProgress(progress *Progress) error {
 	return s.db.Save(&p).Error
 }
 
-func (s *Store) GetProgress(userId uint, manga string, chapter string) (uint, error) {
-	var page uint
+func (s *Store) GetProgress(userId uint64, manga string, chapter string) (uint64, error) {
+	var page uint64
 	err := s.db.Model(&Progress{}).Select("page").Where(
 		"user_id = ? AND manga = ? AND chapter = ?",
 		userId, manga, chapter,

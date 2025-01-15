@@ -18,6 +18,15 @@ import Empty from "@/components/common/Empty";
 export default function History() {
   const [data, setData] = useState<IHistory[]>();
 
+  const handleDelete = async (id: number) => {
+    try {
+      await HistoryService.removeHistory(id);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     HistoryService.getHistory()
       .then((res) => setData(res))
@@ -30,14 +39,13 @@ export default function History() {
       {data ? (
         <Container mb={"80px"} px={"25px"} position={"relative"} mt={"80px"}>
           <Stack>
-            {data?.map((item: IHistory, index: number) => {
-              console.log(item.read_at);
+            {data?.map((item: IHistory) => {
               return (
                 <Box
                   borderWidth={"1px"}
                   borderRadius={"5px"}
                   padding={3}
-                  key={index}
+                  key={item.id}
                 >
                   <Flex justifyContent={"space-between"} alignItems={"center"}>
                     <Stack>
@@ -46,7 +54,10 @@ export default function History() {
                       </Text>
                       <Text>{item.read_at}</Text>
                     </Stack>
-                    <IconButton variant={"ghost"}>
+                    <IconButton
+                      variant={"ghost"}
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <FaTrash />
                     </IconButton>
                   </Flex>

@@ -25,7 +25,7 @@ func (s *Server) updateProgress(c *gin.Context) {
 		return
 	}
 
-	userId := uint(initData.User.ID)
+	userId := uint64(initData.User.ID)
 	progress := &db.Progress{
 		UserId:   userId,
 		Manga:    req.Manga,
@@ -63,7 +63,7 @@ func (s *Server) getProgress(c *gin.Context) {
 		return
 	}
 
-	userId := uint(initData.User.ID)
+	userId := uint64(initData.User.ID)
 	page, err := s.store.GetProgress(userId, manga, chapter)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
