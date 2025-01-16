@@ -32,23 +32,18 @@ func (s *Server) setUpRouting() {
 	router.Use(middleware.CorsMiddleware())
 
 	r := router.Group("/api/v1")
+
 	auth := r.Use(middleware.AuthMiddleware(s.config.BotToken))
-
 	auth.POST("/user", s.createUser)
-
 	auth.GET("/search", s.searchManga)
 	auth.GET("/manga/:manga", s.getManga)
-
 	auth.GET("/history", s.getHistory)
 	auth.DELETE("/history", s.removeHistory)
-
 	auth.POST("/library", s.addLibrary)
 	auth.GET("/library", s.getLibrary)
 	auth.DELETE("/library", s.removeLibrary)
-
 	auth.GET("/progress", s.getProgress)
 	auth.PUT("/progress", s.updateProgress)
-
 	auth.GET("/chapter/:manga/:chapter", s.getChapter)
 
 	s.router = router

@@ -1,0 +1,37 @@
+name: yomu
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=yomu
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+  api:
+    build: 
+      context: server
+      dockerfile: Dockerfile
+    container_name: server
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - POSTGRES_ADDR=host=postgres user=root password=secret dbname=yomu port=5432 sslmode=disable
+    depends_on:
+      - redis 
+      - postgres
+    entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/main" ]
+  bot:
+    build: 
+      context: bot
+      dockerfile: Dockerfile
+    container_name: bot
+
+# set up secrets
