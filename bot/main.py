@@ -14,9 +14,9 @@ dp = Dispatcher()
 @dp.message(CommandStart())
 async def handle_start(message: Message) -> None:
 	await message.answer(
-		text=f"Ohayo, {message.from_user.full_name}!", 
+		text=f"Ohayo, {message.from_user.full_name}! 👋\nEnjoy the alpha release of yomu. If you find any issues, dm @dxtym 🙏", 
 		reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-			[InlineKeyboardButton(text="Let's read!", url="t.me/yomubot/Yomu")]
+			[InlineKeyboardButton(text="Let's read!", url="t.me/yomubot/yomu")]
 		])
 	)
 

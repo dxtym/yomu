@@ -1,12 +1,19 @@
 name: yomu
+
 services:
   postgres:
     image: postgres:alpine
+    secrets:
+      - postgres_user
+      - postgres_pass
+      - postgres_db
     container_name: postgres
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=yomu
+      - POSTGRES_USER_FILE=/run/secrets/postgres_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_pass
+      - POSTGRES_DB_FILE=/run/secrets/postgres_db
+    volumes:
+      - data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   redis:
@@ -18,14 +25,17 @@ services:
     build: 
       context: server
       dockerfile: Dockerfile
+    secrets:
+      - redis_addr
+      - postgres_addr
     container_name: server
     ports:
       - "8080:8080"
     environment:
-      - REDIS_ADDR=redis:6379
-      - POSTGRES_ADDR=host=postgres user=root password=secret dbname=yomu port=5432 sslmode=disable
+      - REDIS_ADDR=/run/secrets/redis_addr
+      - POSTGRES_ADDR=/run/secrets/postgres_addr
     depends_on:
-      - redis 
+      - redis
       - postgres
     entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/main" ]
   bot:
@@ -34,4 +44,17 @@ services:
       dockerfile: Dockerfile
     container_name: bot
 
-# set up secrets
+secrets:
+  postgres_user:
+    file: ./secrets/postgres_user.txt
+  postgres_pass:
+    file: ./secrets/postgres_pass.txt
+  postgres_db:
+    file: ./secrets/postgres_db.txt
+  postgres_addr:
+    file: ./secrets/postgres_addr.txt
+  redis_addr:
+    file: ./secrets/redis_addr.txt
+
+volumes:
+  data:

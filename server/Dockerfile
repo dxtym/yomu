@@ -11,4 +11,4 @@ COPY wait-for.sh .
 
 EXPOSE 8080
 CMD [ "/app/main" ]
-ENTRYPOINT [ "/app/start.sh" ]
+ENTRYPOINT [ "/app/wait-for.sh", "postgres:5432", "--" ]

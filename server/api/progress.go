@@ -10,6 +10,21 @@ import (
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
+// updateProgress godoc
+// @Summary Update progress
+// @Description Renew current manga reading status
+// @Tags progress
+// @Accept json
+// @Produce plain
+// @Param data body types.UpdateProgressRequest true "Requested progress"
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @Success 201 
+// @Failure 400
+// @Failure 401 
+// @Failure 500
+// @Router /progress [put]
 func (s *Server) updateProgress(c *gin.Context) {
 	var req types.UpdateProgressRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -51,6 +66,20 @@ func (s *Server) updateProgress(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// getProgress godoc
+// @Summary Get progress
+// @Description Obtain user progress on chapter
+// @Tags progress
+// @Produce json
+// @Param manga query string true "Requested progress"
+// @Param chapter query string true "Requested chapter"
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @Success 200 
+// @Failure 401 
+// @Failure 500
+// @Router /progress [get]
 func (s *Server) getProgress(c *gin.Context) {
 	manga := c.Query("manga")
 	chapter := c.Query("chapter")
