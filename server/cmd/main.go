@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"sync"
 
@@ -24,9 +25,12 @@ func main() {
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddr,
-		Password: config.RedisPassword,
+		Password: "",
 		DB:       0,
 	})
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
+		log.Fatal(err)
+	}
 
 	scrape := internal.NewScrape()
 	server := api.NewServer(db, rdb, scrape, config)

@@ -10,6 +10,18 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// getManga godoc
+// @Summary Get manga
+// @Description Obtain details about manga
+// @Tags manga
+// @Produce json
+// @Param manga path string true "Requested manga"
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @Success 200 
+// @Failure 500
+// @Router /manga/{manga} [get]
 func (s *Server) getManga(c *gin.Context) {
 	manga := c.Param("manga")
 
@@ -44,6 +56,19 @@ func (s *Server) getManga(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// searchManga godoc
+// @Summary Search manga
+// @Description Search for manga by title
+// @Tags manga
+// @Produce json
+// @Param query query string true "Requested title"
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @Success 200
+// @Failure 204 
+// @Failure 500
+// @Router /search [get]
 func (s *Server) searchManga(c *gin.Context) {
 	query := c.Query("query")
 	if query == "" {
@@ -53,6 +78,13 @@ func (s *Server) searchManga(c *gin.Context) {
 
 	var res []types.SearchMangaResponse
 	s.scrape.SearchManga(s.config.ApiUrl, query, &res)
+
+	if len(res) == 0 {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "no manga found",
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, res)
 }

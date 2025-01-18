@@ -6,6 +6,9 @@ import (
 	"github.com/dxtym/yomu/server/internal"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
+	_ "github.com/dxtym/yomu/server/api/docs"
 )
 
 type Server struct {
@@ -16,24 +19,36 @@ type Server struct {
 	scrape *internal.Scrape
 }
 
+// @title Yomu API
+// @version 1.0
+// @description Yomu is a free manga reader Telegram mini app.
+// @license.name MIT
+// @license.url https://mit-license.org/
+// @host localhost:8080
+// @basePath /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @descriprion Enter from Telegram to send your TMA hashkey.
 func NewServer(store *db.Store, rdb *redis.Client, scrape *internal.Scrape, config *internal.Config) *Server {
-	server := &Server{store: store}
-
-	server.rdb = rdb
-	server.config = config
-	server.scrape = scrape
+	server := &Server{
+		rdb: rdb,
+		store: store,
+		config: config,
+		scrape: scrape,
+	}
 	server.setUpRouting()
-
 	return server
 }
 
 func (s *Server) setUpRouting() {
 	router := gin.Default()
 	router.Use(middleware.CorsMiddleware())
-
+	
 	r := router.Group("/api/v1")
-
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	auth := r.Use(middleware.AuthMiddleware(s.config.BotToken))
+
 	auth.POST("/user", s.createUser)
 	auth.GET("/search", s.searchManga)
 	auth.GET("/manga/:manga", s.getManga)

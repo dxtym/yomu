@@ -1,0 +1,278 @@
+basePath: /api/v1
+definitions:
+  types.AddLibraryRequest:
+    properties:
+      cover_image:
+        type: string
+      manga:
+        type: string
+    type: object
+  types.CreateUserRequest:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      user_name:
+        type: string
+    required:
+    - first_name
+    - id
+    type: object
+  types.RemoveLibraryRequest:
+    properties:
+      manga:
+        type: string
+    type: object
+  types.UpdateProgressRequest:
+    properties:
+      chapter:
+        type: string
+      manga:
+        type: string
+      page:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Yomu is a free manga reader Telegram mini app.
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  title: Yomu API
+  version: "1.0"
+paths:
+  /chapter/{manga}/{chapter}:
+    get:
+      description: Scrape page urls of the chapter
+      parameters:
+      - description: Requested manga
+        in: path
+        name: manga
+        required: true
+        type: string
+      - description: Requested chapter
+        in: path
+        name: chapter
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Get schapter
+      tags:
+      - chapter
+  /history:
+    get:
+      description: Delete record from the history
+      parameters:
+      - description: Requested id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Remove from history
+      tags:
+      - history
+  /library:
+    delete:
+      consumes:
+      - application/json
+      description: Delete manga from the library
+      parameters:
+      - description: Requested delete
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.RemoveLibraryRequest'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Remove from library
+      tags:
+      - library
+    get:
+      description: Obtain mangas in the library
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Get from library
+      tags:
+      - library
+    post:
+      consumes:
+      - application/json
+      description: Create new manga in the library
+      parameters:
+      - description: Requested add
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.AddLibraryRequest'
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Add to library
+      tags:
+      - library
+  /manga/{manga}:
+    get:
+      description: Obtain details about manga
+      parameters:
+      - description: Requested manga
+        in: path
+        name: manga
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Get manga
+      tags:
+      - manga
+  /progress:
+    get:
+      description: Obtain user progress on chapter
+      parameters:
+      - description: Requested progress
+        in: query
+        name: manga
+        required: true
+        type: string
+      - description: Requested chapter
+        in: query
+        name: chapter
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Get progress
+      tags:
+      - progress
+    put:
+      consumes:
+      - application/json
+      description: Renew current manga reading status
+      parameters:
+      - description: Requested progress
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateProgressRequest'
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Update progress
+      tags:
+      - progress
+  /search:
+    get:
+      description: Search for manga by title
+      parameters:
+      - description: Requested title
+        in: query
+        name: query
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+      summary: Search manga
+      tags:
+      - manga
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Register user via Telegram data
+      parameters:
+      - description: Requested user
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create user
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
