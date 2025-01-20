@@ -19,7 +19,7 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 200 
+// @Success 200
 // @Failure 500
 // @Router /manga/{manga} [get]
 func (s *Server) getManga(c *gin.Context) {
@@ -66,7 +66,7 @@ func (s *Server) getManga(c *gin.Context) {
 // @in header
 // @name Authorization
 // @Success 200
-// @Failure 204 
+// @Failure 204
 // @Failure 500
 // @Router /search [get]
 func (s *Server) searchManga(c *gin.Context) {

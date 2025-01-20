@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 	"strings"
 	"time"
@@ -10,33 +9,12 @@ import (
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
-const _initDataKey = "init-data"
-
-func CorsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, ngrok-skip-browser-warning")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent)
-			return
-		}
-
-		c.Next()
-	}
-}
-
-func withInitData(c context.Context, initData initdata.InitData) context.Context {
-	return context.WithValue(c, _initDataKey, initData)
-}
-
 func AuthMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := strings.Split(c.GetHeader("Authorization"), " ")
 		if len(auth) != 2 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
+				"message": "unauthorized access",
 			})
 			return
 		}

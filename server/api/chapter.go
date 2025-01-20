@@ -18,7 +18,7 @@ import (
 // @in header
 // @name Authorization
 // @Success 200
-// @Failure 500 
+// @Failure 500
 // @Router /chapter/{manga}/{chapter} [get]
 func (s *Server) getChapter(c *gin.Context) {
 	manga := c.Param("manga")

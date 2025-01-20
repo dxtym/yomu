@@ -20,9 +20,9 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 201 
+// @Success 201
 // @Failure 400
-// @Failure 401 
+// @Failure 401
 // @Failure 500
 // @Router /progress [put]
 func (s *Server) updateProgress(c *gin.Context) {
@@ -76,8 +76,8 @@ func (s *Server) updateProgress(c *gin.Context) {
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 200 
-// @Failure 401 
+// @Success 200
+// @Failure 401
 // @Failure 500
 // @Router /progress [get]
 func (s *Server) getProgress(c *gin.Context) {

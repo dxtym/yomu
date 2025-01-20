@@ -7,20 +7,6 @@ definitions:
       manga:
         type: string
     type: object
-  types.CreateUserRequest:
-    properties:
-      first_name:
-        type: string
-      id:
-        type: integer
-      last_name:
-        type: string
-      user_name:
-        type: string
-    required:
-    - first_name
-    - id
-    type: object
   types.RemoveLibraryRequest:
     properties:
       manga:
@@ -246,30 +232,6 @@ paths:
       summary: Search manga
       tags:
       - manga
-  /user:
-    post:
-      consumes:
-      - application/json
-      description: Register user via Telegram data
-      parameters:
-      - description: Requested user
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/types.CreateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      summary: Create user
-      tags:
-      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header

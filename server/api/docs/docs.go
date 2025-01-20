@@ -323,43 +323,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/user": {
-            "post": {
-                "description": "Register user via Telegram data",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Create user",
-                "parameters": [
-                    {
-                        "description": "Requested user",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.CreateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -370,27 +333,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "manga": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.CreateUserRequest": {
-            "type": "object",
-            "required": [
-                "first_name",
-                "id"
-            ],
-            "properties": {
-                "first_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "user_name": {
                     "type": "string"
                 }
             }

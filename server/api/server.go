@@ -1,14 +1,14 @@
 package api
 
 import (
+	_ "github.com/dxtym/yomu/server/api/docs"
 	"github.com/dxtym/yomu/server/api/middleware"
 	"github.com/dxtym/yomu/server/db"
 	"github.com/dxtym/yomu/server/internal"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
-	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/files"
-	_ "github.com/dxtym/yomu/server/api/docs"
+	"github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -32,8 +32,8 @@ type Server struct {
 // @descriprion Enter from Telegram to send your TMA hashkey.
 func NewServer(store *db.Store, rdb *redis.Client, scrape *internal.Scrape, config *internal.Config) *Server {
 	server := &Server{
-		rdb: rdb,
-		store: store,
+		rdb:    rdb,
+		store:  store,
 		config: config,
 		scrape: scrape,
 	}
@@ -44,12 +44,11 @@ func NewServer(store *db.Store, rdb *redis.Client, scrape *internal.Scrape, conf
 func (s *Server) setUpRouting() {
 	router := gin.Default()
 	router.Use(middleware.CorsMiddleware())
-	
+
 	r := router.Group("/api/v1")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	auth := r.Use(middleware.AuthMiddleware(s.config.BotToken))
 
-	auth.POST("/user", s.createUser)
 	auth.GET("/search", s.searchManga)
 	auth.GET("/manga/:manga", s.getManga)
 	auth.GET("/history", s.getHistory)
