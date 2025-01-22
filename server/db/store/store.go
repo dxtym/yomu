@@ -1,10 +1,11 @@
-package db
+package store
 
 import (
 	"log"
 	"os"
 	"time"
 
+	"github.com/dxtym/yomu/server/db/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -31,6 +32,6 @@ func NewStore(dsn string) (*Store, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&User{}, &Library{}, &History{}, &Progress{})
+	db.AutoMigrate(&models.User{}, &models.Library{}, &models.History{}, &models.Progress{})
 	return &Store{db: db}, nil
 }

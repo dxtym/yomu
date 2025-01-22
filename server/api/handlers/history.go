@@ -1,7 +1,8 @@
-package api
+package handlers
 
 import (
 	"bytes"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,7 +13,12 @@ import (
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
-// getHistory godoc
+type HistoryHandler interface {
+	GetHistory(c *gin.Context)
+	RemoveHistory(c *gin.Context)
+}
+
+// GetHistory godoc
 // @Summary Get history
 // @Description Obtain user reading history
 // @Tags history
@@ -24,19 +30,19 @@ import (
 // @Failure 401
 // @Failure 500
 // @Router /history [get]
-func (s *Server) getHistory(c *gin.Context) {
+func (h *Handler) GetHistory(c *gin.Context) {
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 		return
 	}
 
-	userId := uint64(initData.User.ID)
-	history, err := s.store.GetHistory(userId)
+	history, err := h.db.GetHistory(initData.User.ID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
@@ -49,16 +55,16 @@ func (s *Server) getHistory(c *gin.Context) {
 		}
 
 		res = append(res, types.GetHistoryResponse{
-			Id:     history[i].Id,
-			Manga:  buf.String(),
-			ReadAt: history[i].ReadAt.Format(time.DateTime),
+			Id:        history[i].UserId,
+			Manga:     buf.String(),
+			UpdatedAt: history[i].UpdatedAt.Format(time.DateOnly),
 		})
 	}
 
 	c.JSON(http.StatusOK, res)
 }
 
-// removeHistory godoc
+// RemoveHistory godoc
 // @Summary Remove from history
 // @Description Delete record from the history
 // @Tags history
@@ -71,24 +77,24 @@ func (s *Server) getHistory(c *gin.Context) {
 // @Failure 401
 // @Failure 500
 // @Router /history [get]
-func (s *Server) removeHistory(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Query("id"), 10, 64)
+func (h *Handler) RemoveHistory(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Query("id"), 10, 64)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not fond")),
+		)
 		return
 	}
 
-	userId := uint64(initData.User.ID)
-	if err := s.store.RemoveHistory(userId, id); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+	if err := h.db.RemoveHistory(id, initData.User.ID); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 

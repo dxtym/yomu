@@ -6,34 +6,30 @@ import (
 	"sync"
 
 	"github.com/dxtym/yomu/server/api"
-	"github.com/dxtym/yomu/server/db"
+	"github.com/dxtym/yomu/server/db/store"
 	"github.com/dxtym/yomu/server/internal"
 	"github.com/redis/go-redis/v9"
 )
 
 func main() {
-	var wg sync.WaitGroup
+	// TODO: use custom logger
 	config, err := internal.LoadConfig(".")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := db.NewStore(config.PostgresAddr)
+	db, err := store.NewStore(config.PostgresAddr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     config.RedisAddr,
-		Password: "",
-		DB:       0,
-	})
+	rdb := redis.NewClient(&redis.Options{Addr: config.RedisAddr})
 	if err := rdb.Ping(context.Background()).Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	scrape := internal.NewScrape()
-	server := api.NewServer(db, rdb, scrape, config)
+	var wg sync.WaitGroup
+	server := api.NewServer(db, rdb, config)
 
 	wg.Add(1)
 	go func() {

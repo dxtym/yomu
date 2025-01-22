@@ -10,32 +10,25 @@ import (
 )
 
 type Scrape struct {
+	url   string
 	colly *colly.Collector
 }
 
-func NewScrape() *Scrape {
+func NewScrape(url string) *Scrape {
 	return &Scrape{
+		url: url,
 		colly: colly.NewCollector(
 			colly.AllowURLRevisit(),
 		),
 	}
 }
 
-func (s *Scrape) GetManga(url string, manga string, res *types.GetMangaResponse) {
-	s.colly.OnHTML("#single_book > div.text > div > h1", func(h *colly.HTMLElement) {
-		res.Title = h.Text
-		log.Printf("found: %s\n", h.Text)
-	})
+func (s *Scrape) GetManga(manga string, res *types.GetMangaResponse) {
+	s.colly.OnHTML("#single_book > div.text > div > h1", func(h *colly.HTMLElement) { res.Title = h.Text })
 
-	s.colly.OnHTML("#single_book > div.media > div > img", func(h *colly.HTMLElement) {
-		res.CoverImage = h.Attr("src")
-		log.Printf("found: %s\n", h.Attr("src"))
-	})
+	s.colly.OnHTML("#single_book > div.media > div > img", func(h *colly.HTMLElement) { res.CoverImage = h.Attr("src") })
 
-	s.colly.OnHTML("#single_book > div.summary > p", func(h *colly.HTMLElement) {
-		res.Description = h.Text
-		log.Printf("found: %s\n", h.Text)
-	})
+	s.colly.OnHTML("#single_book > div.summary > p", func(h *colly.HTMLElement) { res.Description = h.Text })
 
 	s.colly.OnHTML("#single_book > div.chapters > table > tbody > tr > td > div > a", func(h *colly.HTMLElement) {
 		chapter := struct {
@@ -46,27 +39,22 @@ func (s *Scrape) GetManga(url string, manga string, res *types.GetMangaResponse)
 			Url:  h.Attr("href"),
 		}
 		res.Chapters = append(res.Chapters, chapter)
-		log.Printf("found: %s -> %s\n", h.Text, h.Attr("href"))
 	})
 
-	s.colly.Visit(url + "manga/" + manga)
+	s.colly.Visit(s.url + "manga/" + manga)
 }
 
-func (s *Scrape) SearchManga(url string, title string, res *[]types.SearchMangaResponse) {
+func (s *Scrape) SearchManga(title string, res *[]types.SearchMangaResponse) {
 	var mangas []string
 	s.colly.OnHTML("#book_list > div > div.text > h3 > a", func(e *colly.HTMLElement) {
 		url := strings.Split(e.Attr("href"), "/")[4]
 		mangas = append(mangas, url)
-		log.Printf("found: %q -> %s\n", e.Text, e.Attr("href"))
 	})
 
 	var images []string
-	s.colly.OnHTML("#book_list > div > div.media > div.wrap_img > a > img", func(e *colly.HTMLElement) {
-		images = append(images, e.Attr("src"))
-		log.Printf("found: %s\n", e.Attr("src"))
-	})
+	s.colly.OnHTML("#book_list > div > div.media > div.wrap_img > a > img", func(e *colly.HTMLElement) { images = append(images, e.Attr("src")) })
 
-	s.colly.Visit(url + "?search=" + title)
+	s.colly.Visit(s.url + "?search=" + title)
 
 	for i := range mangas {
 		*res = append(*res, types.SearchMangaResponse{
@@ -76,7 +64,7 @@ func (s *Scrape) SearchManga(url string, title string, res *[]types.SearchMangaR
 	}
 }
 
-func (s *Scrape) GetChapter(url string, manga string, chapter string, res *types.GetChapterResponse) {
+func (s *Scrape) GetChapter(manga string, chapter string, res *types.GetChapterResponse) {
 	s.colly.OnResponse(func(r *colly.Response) {
 		body := string(r.Body)
 		re := regexp.MustCompile(`var\sthzq=\[(.*?)\];`)
@@ -87,5 +75,5 @@ func (s *Scrape) GetChapter(url string, manga string, chapter string, res *types
 		log.Printf("found: %s\n", res.PageUrls)
 	})
 
-	s.colly.Visit(url + "manga/" + manga + "/" + chapter)
+	s.colly.Visit(s.url + "manga/" + manga + "/" + chapter)
 }

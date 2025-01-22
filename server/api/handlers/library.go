@@ -1,15 +1,22 @@
-package api
+package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dxtym/yomu/server/api/types"
-	"github.com/dxtym/yomu/server/db"
+	"github.com/dxtym/yomu/server/db/models"
 	"github.com/gin-gonic/gin"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
-// addLibrary godoc
+type LibraryHandler interface {
+	AddLibrary(c *gin.Context)
+	GetLibrary(c *gin.Context)
+	RemoveLibrary(c *gin.Context)
+}
+
+// AddLibrary godoc
 // @Summary Add to library
 // @Description Create new manga in the library
 // @Tags library
@@ -24,35 +31,36 @@ import (
 // @Failure 401
 // @Failure 500
 // @Router /library [post]
-func (s *Server) addLibrary(c *gin.Context) {
+func (h *Handler) AddLibrary(c *gin.Context) {
 	var req types.AddLibraryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrResponse(err))
 		return
 	}
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 		return
 	}
 
-	record := &db.Library{
-		UserId:     uint64(initData.User.ID),
+	record := &models.Library{
+		UserId:     initData.User.ID,
 		Manga:      req.Manga,
 		CoverImage: req.CoverImage,
 	}
-	if err := s.store.AddLibrary(record); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+	if err := h.db.AddLibrary(record); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
 	c.Status(http.StatusCreated)
 }
 
-// getLibrary godoc
+// GetLibrary godoc
 // @Summary Get from library
 // @Description Obtain mangas in the library
 // @Tags library
@@ -64,17 +72,18 @@ func (s *Server) addLibrary(c *gin.Context) {
 // @Failure 401
 // @Failure 500
 // @Router /library [get]
-func (s *Server) getLibrary(c *gin.Context) {
+func (h *Handler) GetLibrary(c *gin.Context) {
 	intiData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 	}
 
-	library, err := s.store.GetLibrary(uint64(intiData.User.ID))
+	library, err := h.db.GetLibrary(intiData.User.ID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
@@ -89,7 +98,7 @@ func (s *Server) getLibrary(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// removeLibrary godoc
+// RemoveLibrary godoc
 // @Summary Remove from library
 // @Description Delete manga from the library
 // @Tags library
@@ -104,25 +113,25 @@ func (s *Server) getLibrary(c *gin.Context) {
 // @Failure 401
 // @Failure 500
 // @Router /library [delete]
-func (s *Server) removeLibrary(c *gin.Context) {
+func (h *Handler) RemoveLibrary(c *gin.Context) {
 	var req types.RemoveLibraryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrResponse(err))
 		return
 	}
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 		return
 	}
 
-	userId := uint64(initData.User.ID)
-	err := s.store.RemoveLibrary(userId, req.Manga)
+	err := h.db.RemoveLibrary(initData.User.ID, req.Manga)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
