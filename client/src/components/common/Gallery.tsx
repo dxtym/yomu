@@ -11,7 +11,7 @@ export default function Gallery(props: {
   hasSearch?: boolean;
 }) {
   const [toast, setToast] = useState<boolean>(false);
-  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [timer, setTimer] = useState<Timer | null>(null);
 
   const handlePress = (item: IManga) => {
     const newTimer = setTimeout(() => {

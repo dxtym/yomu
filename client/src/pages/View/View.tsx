@@ -19,7 +19,7 @@ export default function View() {
   // TODO: rewrite this to custom one
   return (
     <Container>
-      <Carousel page_urls={data?.page_urls} />
+      <Carousel />
     </Container>
   );
 }
