@@ -14,6 +14,7 @@ export default function View() {
     ChapterService.getChapter(params.manga, params.chapter)
       .then((res) => setData(res))
       .catch((err) => console.error(err));
+    console.log(data);
   }, []);
 
   // TODO: rewrite this to custom one
