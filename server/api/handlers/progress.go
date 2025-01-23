@@ -1,16 +1,16 @@
-package api
+package handlers
 
 import (
+	"errors"
 	"net/http"
-	"time"
 
 	"github.com/dxtym/yomu/server/api/types"
-	"github.com/dxtym/yomu/server/db"
+	"github.com/dxtym/yomu/server/db/models"
 	"github.com/gin-gonic/gin"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
-// updateProgress godoc
+// UpdateProgress godoc
 // @Summary Update progress
 // @Description Renew current manga reading status
 // @Tags progress
@@ -20,53 +20,51 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 201 
+// @Success 201
 // @Failure 400
-// @Failure 401 
+// @Failure 401
 // @Failure 500
 // @Router /progress [put]
-func (s *Server) updateProgress(c *gin.Context) {
+func (h *Handler) UpdateProgress(c *gin.Context) {
 	var req types.UpdateProgressRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrResponse(err))
 		return
 	}
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 		return
 	}
 
-	userId := uint64(initData.User.ID)
-	progress := &db.Progress{
-		UserId:   userId,
-		Manga:    req.Manga,
-		Chapter:  req.Chapter,
-		Page:     req.Page,
-		UpdateAt: time.Now(),
+	progress := &models.Progress{
+		UserId:  initData.User.ID,
+		Manga:   req.Manga,
+		Chapter: req.Chapter,
+		Page:    req.Page,
 	}
-	if err := s.store.UpdateProgress(progress); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+	if err := h.db.UpdateProgress(progress); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
-	history := &db.History{
-		UserId: userId,
+	history := &models.History{
+		UserId: initData.User.ID,
 		Manga:  req.Manga,
-		ReadAt: time.Now(),
 	}
-	if err := s.store.AddHistory(history); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+	if err := h.db.AddHistory(history); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
 	c.Status(http.StatusOK)
 }
 
-// getProgress godoc
+// GetProgress godoc
 // @Summary Get progress
 // @Description Obtain user progress on chapter
 // @Tags progress
@@ -76,24 +74,24 @@ func (s *Server) updateProgress(c *gin.Context) {
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 200 
-// @Failure 401 
+// @Success 200
+// @Failure 401
 // @Failure 500
 // @Router /progress [get]
-func (s *Server) getProgress(c *gin.Context) {
+func (h *Handler) GetProgress(c *gin.Context) {
 	manga := c.Query("manga")
 	chapter := c.Query("chapter")
 
 	initData, ok := c.MustGet("init-data").(initdata.InitData)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "init-data not found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			ErrResponse(errors.New("init-data not found")),
+		)
 		return
 	}
 
-	userId := uint64(initData.User.ID)
-	page, err := s.store.GetProgress(userId, manga, chapter)
+	page, err := h.db.GetProgress(initData.User.ID, manga, chapter)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return

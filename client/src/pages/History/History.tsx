@@ -52,7 +52,7 @@ export default function History() {
                       <Text textStyle={"lg"} fontWeight={"semibold"}>
                         {item.manga}
                       </Text>
-                      <Text>{item.read_at}</Text>
+                      <Text>{item.updated_at}</Text>
                     </Stack>
                     <IconButton
                       variant={"ghost"}

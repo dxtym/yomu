@@ -6,12 +6,10 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
 
-interface GalleryProps {
-  data: IManga[];
+export default function Gallery(props: {
+  data?: IManga[];
   hasSearch?: boolean;
-}
-
-export default function Gallery(props: GalleryProps) {
+}) {
   const [toast, setToast] = useState<boolean>(false);
   const [timer, setTimer] = useState<Timer | null>(null);
 

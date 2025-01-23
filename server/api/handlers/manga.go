@@ -1,7 +1,8 @@
-package api
+package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 
@@ -10,7 +11,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// getManga godoc
+type MangaHandler interface {
+	GetManga(c *gin.Context)
+	SearchManga(c *gin.Context)
+}
+
+// GetManga godoc
 // @Summary Get manga
 // @Description Obtain details about manga
 // @Tags manga
@@ -19,44 +25,44 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @Success 200 
+// @Success 200
 // @Failure 500
 // @Router /manga/{manga} [get]
-func (s *Server) getManga(c *gin.Context) {
+func (h *Handler) GetManga(c *gin.Context) {
 	manga := c.Param("manga")
 
 	var res types.GetMangaResponse
-	val, err := s.rdb.Get(c, manga).Result()
+	val, err := h.rdb.Get(c, manga).Result()
 
 	switch err {
 	case redis.Nil:
-		s.scrape.GetManga(s.config.ApiUrl, manga, &res)
+		h.scrape.GetManga(manga, &res)
 		data, err := json.Marshal(res)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 			return
 		}
 
-		err = s.rdb.Set(c, manga, data, time.Hour).Err()
+		err = h.rdb.Set(c, manga, data, time.Hour).Err()
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 			return
 		}
 	case nil:
 		err = json.Unmarshal([]byte(val), &res)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 			return
 		}
 	default:
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrResponse(err))
 		return
 	}
 
 	c.JSON(http.StatusOK, res)
 }
 
-// searchManga godoc
+// SearchManga godoc
 // @Summary Search manga
 // @Description Search for manga by title
 // @Tags manga
@@ -66,23 +72,19 @@ func (s *Server) getManga(c *gin.Context) {
 // @in header
 // @name Authorization
 // @Success 200
-// @Failure 204 
+// @Failure 204
 // @Failure 500
 // @Router /search [get]
-func (s *Server) searchManga(c *gin.Context) {
+func (h *Handler) SearchManga(c *gin.Context) {
 	query := c.Query("query")
-	if query == "" {
-		c.JSON(http.StatusNoContent, gin.H{"message": "empty query"})
-		return
-	}
 
 	var res []types.SearchMangaResponse
-	s.scrape.SearchManga(s.config.ApiUrl, query, &res)
-
+	h.scrape.SearchManga(query, &res)
 	if len(res) == 0 {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "no manga found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError, 
+			ErrResponse(errors.New("no manga found")),
+		)
 		return
 	}
 

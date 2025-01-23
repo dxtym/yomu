@@ -1,7 +1,7 @@
 package types
 
 type UpdateProgressRequest struct {
-	Manga   string `json:"manga"`
-	Chapter string `json:"chapter"`
-	Page    uint64 `json:"page"`
+	Manga   string `json:"manga" binding:"required"`
+	Chapter string `json:"chapter" binding:"required"`
+	Page    int64 `json:"page" binding:"required"`
 }

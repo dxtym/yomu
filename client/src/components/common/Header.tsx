@@ -1,14 +1,12 @@
 import { Container, Flex, Heading, Input } from "@chakra-ui/react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-interface HeaderProps {
+export default function Header(props: {
   name: string;
   hasSearch?: boolean;
   onClick?: () => void;
   setQuery?: (query: string) => void;
-}
-
-export default function Header(props: HeaderProps) {
+}) {
   return (
     <Container
       top={0}

@@ -1,13 +1,18 @@
-package api
+package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dxtym/yomu/server/api/types"
 	"github.com/gin-gonic/gin"
 )
 
-// getChapter godoc
+type ChapterHandler interface {
+	GetChapter(c *gin.Context)
+}
+
+// GetChapter godoc
 // @Summary Get schapter
 // @Description Scrape page urls of the chapter
 // @Tags chapter
@@ -18,19 +23,20 @@ import (
 // @in header
 // @name Authorization
 // @Success 200
-// @Failure 500 
+// @Failure 500
 // @Router /chapter/{manga}/{chapter} [get]
-func (s *Server) getChapter(c *gin.Context) {
+func (h *Handler) GetChapter(c *gin.Context) {
 	manga := c.Param("manga")
 	chapter := c.Param("chapter")
 
 	var res types.GetChapterResponse
-	s.scrape.GetChapter(s.config.ApiUrl, manga, chapter, &res)
+	h.scrape.GetChapter(manga, chapter, &res)
 
 	if len(res.PageUrls) == 0 {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "no pages found",
-		})
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError, 
+			ErrResponse(errors.New("no pages found")),
+		)
 		return
 	}
 
