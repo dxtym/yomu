@@ -18,14 +18,14 @@ import {
 export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <>
-        <Route path="/" element={<Library />} />
-        <Route path="/library" element={<Library />} />
-        <Route path="/browse" element={<Browse />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/browse/:manga" element={<Manga />} />
-        <Route path="/chapter/:manga/:chapter" element={<View />} />
-      </>,
+      <Route path="/">
+        <Route index element={<Library />} />
+        <Route path="library" element={<Library />} />
+        <Route path="browse" element={<Browse />} />
+        <Route path="history" element={<History />} />
+        <Route path="browse/:manga" element={<Manga />} />
+        <Route path="chapter/:manga/:chapter" element={<View />} />
+      </Route>,
     ),
   );
 

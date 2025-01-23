@@ -4,14 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
-	gorm.Model
-	UserId    int64  `gorm:"index:idx_user,unique;not null"`
-	FirstName string `gorm:"not null"`
-	LastName  string
-	UserName  string
-}
-
 type Library struct {
 	gorm.Model
 	UserId     int64  `gorm:"index:idx_lib_user_manga,unique;not null"`

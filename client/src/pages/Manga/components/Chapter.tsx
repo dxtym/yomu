@@ -1,12 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-interface ChapterProps {
-  url: string;
-  name: string;
-}
-
-export default function Chapter(props: ChapterProps) {
+export default function Chapter(props: { url: string; name: string }) {
   const chapter = props.url.split("/").slice(4).join("/");
 
   return (

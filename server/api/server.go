@@ -51,7 +51,6 @@ func (s *Server) setUpRouting() {
 	router.Use(middleware.CorsMiddleware())
 
 	r := router.Group("/api/v1")
-	r.POST("/user", handler.CreateUser)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	auth := r.Use(middleware.AuthMiddleware(s.config.BotToken))

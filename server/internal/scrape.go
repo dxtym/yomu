@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"regexp"
 	"strings"
 
@@ -72,7 +71,6 @@ func (s *Scrape) GetChapter(manga string, chapter string, res *types.GetChapterR
 
 		match := re.FindString(body)
 		res.PageUrls = urls.FindAllString(match, -1)
-		log.Printf("found: %s\n", res.PageUrls)
 	})
 
 	s.colly.Visit(s.url + "manga/" + manga + "/" + chapter)

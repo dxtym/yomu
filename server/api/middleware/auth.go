@@ -17,7 +17,7 @@ func AuthMiddleware(token string) gin.HandlerFunc {
 		if len(auth) != 2 {
 			c.AbortWithStatusJSON(
 				http.StatusUnauthorized,
-				handlers.ErrResponse(errors.New("incorrect auth format")),
+				handlers.ErrResponse(errors.New("wrong auth format")),
 			)
 			return
 		}

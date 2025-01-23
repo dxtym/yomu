@@ -1,8 +1,8 @@
 package types
 
 type AddLibraryRequest struct {
-	Manga      string `json:"manga"`
-	CoverImage string `json:"cover_image"`
+	Manga      string `json:"manga" binding:"required"`
+	CoverImage string `json:"cover_image" binding:"required"`
 }
 
 type GetLibraryResponse struct {
@@ -11,5 +11,5 @@ type GetLibraryResponse struct {
 }
 
 type RemoveLibraryRequest struct {
-	Manga string `json:"manga"`
+	Manga string `json:"manga" binding:"required"`
 }

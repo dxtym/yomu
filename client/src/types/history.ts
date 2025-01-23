@@ -1,5 +1,5 @@
 export interface IHistory {
   id: number;
   manga: string;
-  read_at: string;
+  updated_at: string;
 }

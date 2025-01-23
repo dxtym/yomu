@@ -32,6 +32,6 @@ func NewStore(dsn string) (*Store, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Library{}, &models.History{}, &models.Progress{})
+	db.AutoMigrate(&models.Library{}, &models.History{}, &models.Progress{})
 	return &Store{db: db}, nil
 }

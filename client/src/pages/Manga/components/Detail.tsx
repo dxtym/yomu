@@ -11,11 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { IDetail } from "@/types/detail";
 
-interface DetailProps {
-  data?: IDetail;
-}
-
-export default function Detail(props: DetailProps) {
+export default function Detail(props: { data?: IDetail }) {
   const title = props.data?.title ?? "Untitled";
   const coverImage = props.data?.cover_image ?? "/default.jpg";
   const description = props.data?.description ?? "No description available.";
