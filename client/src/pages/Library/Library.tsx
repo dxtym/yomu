@@ -8,7 +8,7 @@ import Gallery from "@/components/common/Gallery";
 import { IManga } from "@/types/manga";
 import { useEffect, useState } from "react";
 
-export default function Library() {
+const Library = () => {
   const [data, setData] = useState<IManga[]>([]);
 
   useEffect(() => {
@@ -29,3 +29,5 @@ export default function Library() {
     </>
   );
 }
+
+export default Library;

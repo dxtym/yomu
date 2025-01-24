@@ -8,7 +8,7 @@ import Navbar from "@/components/common/Navbar";
 import { IManga } from "@/types/manga";
 import { useEffect, useState } from "react";
 
-export default function Browse() {
+const Browse = () => {
   const [data, setData] = useState<IManga[]>();
   const [query, setQuery] = useState<string>("");
 
@@ -36,3 +36,5 @@ export default function Browse() {
     </>
   );
 }
+
+export default Browse;

@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import Empty from "@/components/common/Empty";
 
-export default function History() {
+const History = () => {
   const [data, setData] = useState<IHistory[]>();
 
   const handleDelete = async (id: number) => {
@@ -73,3 +73,5 @@ export default function History() {
     </>
   );
 }
+
+export default History;

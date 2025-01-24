@@ -1,6 +1,6 @@
 import { Alert } from "@chakra-ui/react";
 
-export default function Toaster() {
+const Toaster = () => {
   return (
     <Alert.Root
       top={"15%"}
@@ -16,3 +16,5 @@ export default function Toaster() {
     </Alert.Root>
   );
 }
+
+export default Toaster;

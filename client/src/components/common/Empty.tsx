@@ -1,6 +1,6 @@
 import { Flex, Container, Text } from "@chakra-ui/react";
 
-export default function Empty() {
+const Empty = () => {
   return (
     <Container
       height={"100vh"}
@@ -10,8 +10,10 @@ export default function Empty() {
     >
       <Flex justifyContent={"center"} alignItems={"center"} flexDir={"column"}>
         <Text fontSize={"3xl"}>^•⩊•^</Text>
-        <Text>Gomenasai!</Text>
+        <Text>Empty</Text>
       </Flex>
     </Container>
   );
 }
+
+export default Empty;

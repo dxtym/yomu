@@ -1,12 +1,14 @@
 import { Container, Flex, Heading, Input } from "@chakra-ui/react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-export default function Header(props: {
+interface HeaderProps {
   name: string;
   hasSearch?: boolean;
   onClick?: () => void;
   setQuery?: (query: string) => void;
-}) {
+}
+
+const Header: React.FC<HeaderProps> = ({ name, hasSearch, onClick, setQuery }) => {
   return (
     <Container
       top={0}
@@ -22,18 +24,20 @@ export default function Header(props: {
         justify={{ md: "space-between" }}
         gap={5}
       >
-        <Heading textStyle={"2xl"} onClick={props.onClick}>
-          {props.name === "Back" ? <IoMdArrowRoundBack /> : props.name}
+        <Heading textStyle={"2xl"} onClick={onClick}>
+          {name === "Back" ? <IoMdArrowRoundBack /> : name}
         </Heading>
         <Input
-          display={props.hasSearch ? "block" : "none"}
+          display={hasSearch ? "block" : "none"}
           placeholder={"Search for manga..."}
           variant={"subtle"}
           size={"lg"}
           maxW={{ base: "100%", md: "400px" }}
-          onChange={(e) => props.setQuery && props.setQuery(e.target.value)}
+          onChange={(e) => setQuery && setQuery(e.target.value)}
         />
       </Flex>
     </Container>
   );
 }
+
+export default Header;

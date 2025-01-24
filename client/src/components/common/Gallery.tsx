@@ -6,24 +6,23 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
 
-export default function Gallery(props: {
+interface GalleryProps {
   data?: IManga[];
   hasSearch?: boolean;
-}) {
+}
+
+const Gallery: React.FC<GalleryProps> = ({ data, hasSearch }) => {
   const [toast, setToast] = useState<boolean>(false);
   const [timer, setTimer] = useState<Timer | null>(null);
 
   const handlePress = (item: IManga) => {
     const newTimer = setTimeout(() => {
-      const action = props.hasSearch
-        ? LibraryService.addLibrary(item.manga, item.cover_image)
-        : LibraryService.removeLibrary(item.manga);
-
+      const action = hasSearch ? LibraryService.addLibrary(item.manga, item.cover_image) : LibraryService.removeLibrary(item.manga);
       action
         .then(() => {
           setToast(true);
           setTimeout(() => setToast(false), 3000);
-          if (!props.hasSearch) {
+          if (!hasSearch) {
             window.location.reload();
           }
         })
@@ -45,14 +44,14 @@ export default function Gallery(props: {
       mb={"80px"}
       px={"25px"}
       position={"relative"}
-      mt={props.hasSearch ? "150px" : "80px"}
+      mt={hasSearch ? "150px" : "80px"}
     >
       {toast && <Toaster />}
       <Grid
         templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
         gap={5}
       >
-        {props.data?.map((item: IManga, index: number) => {
+        {data?.map((item: IManga, index: number) => {
           return (
             <GridItem
               key={index}
@@ -74,3 +73,5 @@ export default function Gallery(props: {
     </Container>
   );
 }
+
+export default Gallery;
