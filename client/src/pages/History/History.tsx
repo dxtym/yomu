@@ -1,10 +1,9 @@
-import HistoryService from "@/api/history";
 import Header from "@/components/common/Header";
 import Navbar from "@/components/common/Navbar";
 
-import { useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { IHistory } from "@/types/history";
+import { FaTrash } from "react-icons/fa";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -14,32 +13,30 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Empty from "@/components/common/Empty";
+import { ApiClientHooksContext } from "@/app/App";
 
-export default function History() {
-  const [data, setData] = useState<IHistory[]>();
+const History: FC = (): ReactElement => {
+  const [history, setHistory] = useState<IHistory[]>();
+  const apiClientHooks = useContext(ApiClientHooksContext);
 
-  const handleDelete = async (id: number) => {
-    try {
-      await HistoryService.removeHistory(id);
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-    }
+  const handleDelete = (id: number) => {
+    const history = apiClientHooks.removeHistory(id);
+    if (history.state === "rejected") console.error(history.error);
   };
 
   useEffect(() => {
-    HistoryService.getHistory()
-      .then((res) => setData(res))
-      .catch((err) => console.error(err));
+    const history = apiClientHooks.getHistory();
+    if (history.state === "resolved") setHistory(history.value);
+    else if (history.state === "rejected") console.error(history.error); // TODO: error handling
   }, []);
 
   return (
     <>
       <Header name="History" />
-      {data ? (
+      {history ? (
         <Container mb={"80px"} px={"25px"} position={"relative"} mt={"80px"}>
           <Stack>
-            {data?.map((item: IHistory) => {
+            {history?.map((item: IHistory) => {
               return (
                 <Box
                   borderWidth={"1px"}
@@ -73,3 +70,5 @@ export default function History() {
     </>
   );
 }
+
+export default History;

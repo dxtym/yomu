@@ -1,7 +1,8 @@
 import Option from "./Option";
+import { FC, ReactElement } from "react";
 import { Container, Flex, Link } from "@chakra-ui/react";
 
-export default function Navbar() {
+const Navbar: FC = (): ReactElement => {
   const navs = ["Library", "Browse", "History"];
 
   return (
@@ -22,3 +23,5 @@ export default function Navbar() {
     </Container>
   );
 }
+
+export default Navbar;

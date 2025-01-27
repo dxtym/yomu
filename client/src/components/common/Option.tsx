@@ -1,9 +1,15 @@
+import { FC, ReactElement } from "react";
 import { Button, Container, Text } from "@chakra-ui/react";
 import { FaSearch, FaBook, FaHistory } from "react-icons/fa";
 
-export default function Option(props: { text: string; index: number }) {
+interface OptionProps {
+  text: string;
+  index: number;
+}
+
+const Option: FC<OptionProps> = ({ text, index }): ReactElement => {
   const renderIcons = () => {
-    switch (props.index) {
+    switch (index) {
       case 0:
         return <FaBook />;
       case 1:
@@ -24,8 +30,10 @@ export default function Option(props: { text: string; index: number }) {
         gap={"5px"}
       >
         {renderIcons()}
-        <Text textStyle={"md"}>{props.text}</Text>
+        <Text textStyle={"md"}>{text}</Text>
       </Button>
     </Container>
   );
 }
+
+export default Option;

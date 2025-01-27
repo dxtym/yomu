@@ -10,12 +10,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IDetail } from "@/types/detail";
+import { FC, ReactElement } from "react";
 
-export default function Detail(props: { data?: IDetail }) {
-  const title = props.data?.title ?? "Untitled";
-  const coverImage = props.data?.cover_image ?? "/default.jpg";
-  const description = props.data?.description ?? "No description available.";
-  const chapters = props.data?.chapters ?? [];
+interface DetailProps {
+  data?: IDetail;
+}
+
+const Detail: FC<DetailProps> = ({ data }): ReactElement => {
+  const title = data?.title ?? "Untitled";
+  const coverImage = data?.cover_image ?? "/default.jpg";
+  const description = data?.description ?? "No description available.";
+  const chapters = data?.chapters ?? [];
 
   return (
     <Container px={"25px"} my={"80px"} position={"relative"}>
@@ -37,3 +42,5 @@ export default function Detail(props: { data?: IDetail }) {
     </Container>
   );
 }
+
+export default Detail;
