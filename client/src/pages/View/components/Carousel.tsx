@@ -1,7 +1,8 @@
+import React from "react";
 import Pager from "./Pager";
 import Loading from "@/components/common/Loading";
 
-import { IChapter } from "@/types/chapter";
+import { IChapter } from "@/types/chapter"
 import { FC, ReactElement, useRef, useState } from "react";
 import { Container, Box, Image } from "@chakra-ui/react";
 
@@ -10,7 +11,7 @@ const Carousel: FC<IChapter> = ({ page_urls }): ReactElement => {
   const [zoom, setZoom] = useState<number>(1);
   const [pos, setPos] = useState({x: 0, y: 0});
   const imageRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [dragging, setDragging] = useState<boolean>(false);
 
@@ -28,14 +29,14 @@ const Carousel: FC<IChapter> = ({ page_urls }): ReactElement => {
     }
   }
 
-  const handleWheel = (e: WheelEvent) => {
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (imageRef.current) {
       const newZoom = zoom + (e.deltaY > 0 ? -0.1 : 0.1);
       setZoom(Math.max(1, Math.min(newZoom, 3)));
     }
   }
 
-  const handleMouseDown = (e: MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setDragging(true);
     const initPos = { x: e.clientX, y: e.clientY };
     const initDragPos = { ...pos };
