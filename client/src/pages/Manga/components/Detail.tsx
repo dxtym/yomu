@@ -10,12 +10,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IDetail } from "@/types/detail";
+import { FC, ReactElement } from "react";
 
 interface DetailProps {
   data?: IDetail;
 }
 
-const Detail: React.FC<DetailProps> = ({ data }) => {
+const Detail: FC<DetailProps> = ({ data }): ReactElement => {
   const title = data?.title ?? "Untitled";
   const coverImage = data?.cover_image ?? "/default.jpg";
   const description = data?.description ?? "No description available.";

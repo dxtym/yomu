@@ -1,4 +1,5 @@
 import { Container, Flex, Heading, Input } from "@chakra-ui/react";
+import { FC, ReactElement } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 interface HeaderProps {
@@ -8,7 +9,7 @@ interface HeaderProps {
   setQuery?: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ name, hasSearch, onClick, setQuery }) => {
+const Header: FC<HeaderProps> = ({ name, hasSearch, onClick, setQuery }): ReactElement => {
   return (
     <Container
       top={0}

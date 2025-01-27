@@ -1,6 +1,7 @@
 import { Alert } from "@chakra-ui/react";
+import { FC, ReactElement } from "react";
 
-const Toaster = () => {
+const Toaster: FC = (): ReactElement => {
   return (
     <Alert.Root
       top={"15%"}

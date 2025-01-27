@@ -1,30 +1,26 @@
-import LibraryService from "@/api/library";
-
 import Header from "@/components/common/Header";
 import Navbar from "@/components/common/Navbar";
-import Empty from "@/components/common/Empty";
 import Gallery from "@/components/common/Gallery";
 
-import { IManga } from "@/types/manga";
-import { useEffect, useState } from "react";
+import { ApiClientHooksContext } from "@/app/App";
+import { FC, ReactElement, useContext } from "react";
+import Loading from "@/components/common/Loading";
 
-const Library = () => {
-  const [data, setData] = useState<IManga[]>([]);
+const Library: FC = (): ReactElement => {
+  const apiClientHooks = useContext(ApiClientHooksContext);
+  const manga = apiClientHooks.getLibrary();
 
-  useEffect(() => {
-    LibraryService.getLibrary()
-      .then((res) => {
-        setData(res);
-        document.body.style.height = "auto";
-        document.body.style.overflow = "auto";
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  if (manga.state === "resolved") {
+    document.body.style.height = "auto";
+    document.body.style.overflow = "auto";
+  } else if (manga.state === "rejected") {
+    console.error(manga.error); // TODO: error handling
+  }
 
   return (
     <>
       <Header name={"Library"} />
-      {data ? <Gallery data={data} /> : <Empty />}
+      {manga.state === "resolved" ? <Gallery data={manga.value} /> : <Loading /> }
       <Navbar />
     </>
   );

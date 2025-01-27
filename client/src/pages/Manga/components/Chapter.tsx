@@ -1,4 +1,5 @@
 import { Box, Text } from "@chakra-ui/react";
+import { FC, ReactElement } from "react";
 import { Link } from "react-router-dom";
 
 interface ChapterProps {
@@ -6,7 +7,7 @@ interface ChapterProps {
   name: string;
 }
 
-const Chapter: React.FC<ChapterProps> = ({ url, name }) => {
+const Chapter: FC<ChapterProps> = ({ url, name }): ReactElement => {
   const chapter = url.split("/").slice(4).join("/");
 
   return (

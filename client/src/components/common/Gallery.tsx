@@ -1,32 +1,36 @@
-import LibraryService from "@/api/library";
 import Toaster from "@/components/common/Toaster";
 
 import { IManga } from "@/types/manga";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { FC, ReactElement, useContext, useState } from "react";
 import { Center, Container, Grid, GridItem, Image } from "@chakra-ui/react";
+import { ApiClientHooksContext } from "@/app/App";
 
 interface GalleryProps {
   data?: IManga[];
   hasSearch?: boolean;
 }
 
-const Gallery: React.FC<GalleryProps> = ({ data, hasSearch }) => {
+const Gallery: FC<GalleryProps> = ({ data, hasSearch }): ReactElement => {
   const [toast, setToast] = useState<boolean>(false);
   const [timer, setTimer] = useState<Timer | null>(null);
+  const apiClientHooks = useContext(ApiClientHooksContext);
 
   const handlePress = (item: IManga) => {
     const newTimer = setTimeout(() => {
-      const action = hasSearch ? LibraryService.addLibrary(item.manga, item.cover_image) : LibraryService.removeLibrary(item.manga);
-      action
-        .then(() => {
-          setToast(true);
-          setTimeout(() => setToast(false), 3000);
-          if (!hasSearch) {
-            window.location.reload();
-          }
-        })
-        .catch((err) => console.error(err));
+      const action = hasSearch 
+        ? apiClientHooks.addLibrary(item.manga, item.cover_image) 
+        : apiClientHooks.removeLibrary(item.manga);
+      
+      if (action.state === "rejected") console.error(action.error); // TODO: error handling
+      if (action.state === "resolved") {
+        setToast(true);
+        setTimeout(() => setToast(false), 3000);
+        if (!hasSearch) {
+          window.location.reload();
+        }
+      }
+
     }, 1000);
 
     setTimer(newTimer);

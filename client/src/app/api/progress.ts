@@ -1,26 +1,26 @@
-import apiClient from "./client";
+import ApiClient from "./client";
 
-async function updateProgress(
+export async function updateProgress(
+  this: ApiClient,
   manga: string | undefined,
   chapter: string | undefined,
   page: number,
 ): Promise<void> {
-  await apiClient.put("/progress", {
+  await this.client.put("/progress", {
     manga: manga,
     chapter: chapter,
     page: page,
   });
 }
 
-async function getProgress(
+export async function getProgress(
+  this: ApiClient,
   manga: string | undefined,
   chapter: string | undefined,
 ): Promise<number> {
-  const res = await apiClient.get<number>("/progress", {
+  const res = await this.client.get<number>("/progress", {
     params: { manga: manga, chapter: chapter },
   });
 
   return res.data;
 }
-
-export default { updateProgress, getProgress };

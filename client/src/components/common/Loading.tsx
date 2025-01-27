@@ -1,6 +1,7 @@
 import { Flex, Spinner } from "@chakra-ui/react";
+import { FC, ReactElement } from "react";
 
-const Loading = () => {
+const Loading: FC = (): ReactElement => {
   return (
     <Flex justifyContent={"center"} alignItems={"center"} height={"100vh"}>
       <Spinner size={"xl"} />

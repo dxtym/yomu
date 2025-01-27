@@ -1,3 +1,4 @@
+import { FC, ReactElement } from "react";
 import { Button, Container, Text } from "@chakra-ui/react";
 import { FaSearch, FaBook, FaHistory } from "react-icons/fa";
 
@@ -6,7 +7,7 @@ interface OptionProps {
   index: number;
 }
 
-const Option: React.FC<OptionProps> = ({ text, index }) => {
+const Option: FC<OptionProps> = ({ text, index }): ReactElement => {
   const renderIcons = () => {
     switch (index) {
       case 0:

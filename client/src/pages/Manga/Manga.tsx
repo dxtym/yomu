@@ -1,36 +1,37 @@
-import MangaService from "@/api/manga";
-
-import Header from "@/components/common/Header";
+import { ApiClientHooksContext } from "@/app/App";
 import Loading from "@/components/common/Loading";
 import Detail from "@/pages/Manga/components/Detail";
 
 import { IDetail } from "@/types/detail";
-import { useEffect, useState } from "react";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const Manga = () => {
+const Manga: FC = (): ReactElement => {
   const params = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<IDetail>();
+  const [details, setDetails] = useState<IDetail>();
   const [loading, setLoading] = useState<boolean>(true);
+  const apiClientHooks = useContext(ApiClientHooksContext);
+
+  const backBtn = window.Telegram.WebApp.BackButton;
+  backBtn.show();
+  backBtn.onClick(() => navigate(-1));
 
   useEffect(() => {
-    MangaService.getManga(params.manga)
-      .then((res) => setData(res))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+    const details = apiClientHooks.getManga(params.manga ?? "");
+    if (details.state === "resolved") {
+      setLoading(false);
+      setDetails(details.value);
+    } else if (details.state === "rejected") {
+      console.error(details.error); // TODO: error handling
+    }
   }, []);
 
   if (loading) {
     return <Loading />;
   }
 
-  return (
-    <>
-      <Header name={"Back"} onClick={() => navigate(-1)} />
-      <Detail data={data} />
-    </>
-  );
+  return <Detail data={details} />
 }
 
 export default Manga;

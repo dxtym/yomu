@@ -1,6 +1,7 @@
 import { Flex, Container, Text } from "@chakra-ui/react";
+import { FC, ReactElement } from "react";
 
-const Empty = () => {
+const Empty: FC = (): ReactElement => {
   return (
     <Container
       height={"100vh"}

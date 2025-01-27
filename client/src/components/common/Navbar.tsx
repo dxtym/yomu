@@ -1,7 +1,8 @@
 import Option from "./Option";
+import { FC, ReactElement } from "react";
 import { Container, Flex, Link } from "@chakra-ui/react";
 
-const Navbar = () => {
+const Navbar: FC = (): ReactElement => {
   const navs = ["Library", "Browse", "History"];
 
   return (
