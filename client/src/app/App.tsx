@@ -3,8 +3,11 @@ import "./App.css";
 import Browse from "@/pages/Browse/Browse";
 import Library from "@/pages/Library/Library";
 import History from "@/pages/History/History";
+import View from "@/pages/View/View";
+import Manga from "@/pages/Manga/Manga";
+import Loading from "@/components/common/Loading";
 
-import { Suspense, createContext, lazy, useMemo } from "react";
+import { Suspense, createContext, useMemo } from "react";
 import { LocaleProvider } from "@chakra-ui/react";
 import {
   Route,
@@ -14,10 +17,6 @@ import {
 } from "react-router-dom";
 import ApiClient from "@/app/api/client";
 import { ApiClientHooks } from "@/hooks/client";
-
-const View = lazy(() => require("@/pages/View/View"));
-const Manga = lazy(() => require("@/pages/Manga/Manga"));
-const Loading = lazy(() => require("@/components/common/Loading"));
 
 const apiClient = new ApiClient(); 
 const ApiClientHooksContext = createContext<ApiClientHooks>(new ApiClientHooks(apiClient));

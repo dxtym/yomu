@@ -13,7 +13,7 @@ interface GalleryProps {
 
 const Gallery: FC<GalleryProps> = ({ data, hasSearch }): ReactElement => {
   const [toast, setToast] = useState<boolean>(false);
-  const [timer, setTimer] = useState<Timer | null>(null);
+  const [timer, setTimer] = useState<typeof setTimeout | null>(null);
   const apiClientHooks = useContext(ApiClientHooksContext);
 
   const handlePress = (item: IManga) => {
